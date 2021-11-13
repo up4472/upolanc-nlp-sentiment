@@ -46,7 +46,7 @@ def __class_vader (dataset : DataFrame, logger : Logger) -> None :
 	)
 
 	__report(
-		name = f'Vader features [if-else]',
+		name = f'Vader [compound score]',
 		results = results,
 		logger = logger
 	)

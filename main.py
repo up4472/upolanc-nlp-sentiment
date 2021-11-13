@@ -48,7 +48,7 @@ def download_resources (logger : Logger) -> None :
 	logger.info('Downloading [wordnet] from [nltk]...')
 	nltk.download('wordnet', quiet = True)
 
-	logger.info('Downloading [vader_lexicon] from [nltk]...')
+	logger.info('Downloading [vader_lexicon] from [nltk]...\n')
 	nltk.download('vader_lexicon', quiet = True)
 
 def main (logger : Logger) -> None :
@@ -84,7 +84,7 @@ def main (logger : Logger) -> None :
 	logger.info('Stemming dataset text...')
 	dataset = stem_tokens(dataset = dataset, column = 'text')
 
-	logger.info('Lemmatizing dataset text...')
+	logger.info('Lemmatizing dataset text...\n')
 	dataset = lemmatize_tokens(dataset = dataset, column = 'text')
 
 	logger.debug('Dataset header:\n' + str(dataset.head()) + '\n')
@@ -92,7 +92,7 @@ def main (logger : Logger) -> None :
 	pos_words, neg_words = sentimental_words(dataset = dataset, column = 'text', target = 'target', top = 100)
 
 	logger.debug('Positive words : ' + str(pos_words))
-	logger.debug('Negative words : ' + str(neg_words) + '\n')
+	logger.debug('Negative words : ' + str(neg_words))
 
 	main_classification(dataset = dataset, pos_words = pos_words, neg_words = neg_words, logger = logger)
 
