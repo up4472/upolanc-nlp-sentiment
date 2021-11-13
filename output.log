@@ -1,30 +1,91 @@
-2021-11-10 18:43:39,971 - root : INFO : Loading dataset and configuration files...
-2021-11-10 18:43:40,026 - root : INFO : Checking for any missing values in the dataset...
+2021-11-13 22:28:49,173 - root : INFO : Downloading [stopwords] from [nltk]...
+2021-11-13 22:28:49,223 - root : INFO : Downloading [names] from [nltk]...
+2021-11-13 22:28:49,224 - root : INFO : Downloading [wordnet] from [nltk]...
+2021-11-13 22:28:49,240 - root : INFO : Downloading [vader_lexicon] from [nltk]...
+2021-11-13 22:28:49,240 - root : INFO : Loading dataset and configuration files...
+2021-11-13 22:28:49,290 - root : INFO : Checking for any missing values in the dataset...
 
-2021-11-10 18:43:40,029 - root : DEBUG : Missing values:
-airline_sentiment    0
-airline              0
-text                 0
+2021-11-13 22:28:49,292 - root : DEBUG : Missing values:
+target    0
+text      0
 dtype: int64
 
-2021-11-10 18:43:40,031 - root : DEBUG : Dataset header:
-  airline_sentiment         airline                                               text
-0           neutral  Virgin America                @VirginAmerica What @dhepburn said.
-1          positive  Virgin America  @VirginAmerica plus you've added commercials t...
-2           neutral  Virgin America  @VirginAmerica I didn't today... Must mean I n...
-3          negative  Virgin America  @VirginAmerica it's really aggressive to blast...
-4          negative  Virgin America  @VirginAmerica and it's a really big bad thing...
+2021-11-13 22:28:49,293 - root : DEBUG : Dataset header:
+     target                                               text
+0   neutral                @VirginAmerica What @dhepburn said.
+1  positive  @VirginAmerica plus you've added commercials t...
+2   neutral  @VirginAmerica I didn't today... Must mean I n...
+3  negative  @VirginAmerica it's really aggressive to blast...
+4  negative  @VirginAmerica and it's a really big bad thing...
 
-2021-11-10 18:43:40,032 - root : INFO : Cleaning dataset text...
-2021-11-10 18:43:40,465 - root : INFO : Tokenizing dataset text...
-2021-11-10 18:43:40,501 - root : INFO : Stemming dataset text...
-2021-11-10 18:43:42,000 - root : INFO : Lemmatizing dataset text...
+2021-11-13 22:28:49,296 - root : DEBUG : Sentiment distribution:
+          count  frequency
+negative   9178   0.626913
+neutral    3099   0.211680
+positive   2363   0.161407
 
-2021-11-10 18:43:43,255 - root : DEBUG : Dataset header:
-  airline_sentiment         airline                                               text
-0           neutral  Virgin America                                             [said]
-1          positive  Virgin America                [youv, ad, commerci, experi, tacki]
-2           neutral  Virgin America                [st, mean, need, take, anoth, trip]
-3          negative  Virgin America  [realli, aggress, blast, obnoxi, entertain, gu...
-4          negative  Virgin America                          [realli, big, bad, thing]
+2021-11-13 22:28:49,296 - root : INFO : Cleaning dataset text...
+2021-11-13 22:28:57,241 - root : INFO : Calculating polarity scores...
+2021-11-13 22:29:01,465 - root : INFO : Tokenizing dataset text...
+2021-11-13 22:29:01,494 - root : INFO : Stemming dataset text...
+2021-11-13 22:29:02,828 - root : INFO : Lemmatizing dataset text...
+2021-11-13 22:29:03,917 - root : DEBUG : Dataset header:
+     target                                               text  word_count  vader_compound  vader_positive  vader_negative  vader_neutral vader_prediction
+0   neutral                                             [said]           1          0.0000           0.000           0.000          1.000          neutral
+1  positive                      [ad, commerci, experi, tacki]           4          0.0000           0.000           0.000          1.000          neutral
+2   neutral                      [st, mean, need, take, anoth]           5          0.0000           0.000           0.000          1.000          neutral
+3  negative  [realli, aggress, blast, obnoxi, entertain, gu...          10         -0.3306           0.187           0.345          0.468         negative
+4  negative                          [realli, big, bad, thing]           4         -0.5829           0.000           0.557          0.443         negative
+
+2021-11-13 22:29:04,783 - root : DEBUG : Positive words : {'sparkl', 'secomeback', 'gma', 'ssbook', 'whoa', 'killeen', 'sjblue', 'milan', 'minim', 'pleasur', 'wc', 'xoxo', 'sdwpkk', 'oui', 'iconographi', 'selfi', 'cream', 'chocol', 'liveri', 'santli', 'gosh', 'trv', 'smoothest', 'cb', 'revu', 'sanfrancisco', 'sxu', 'sedholm', 'caribbean', 'm', 'resol', 'grate', 'rollercoast', 'bright', 'sofli', 'yummi', 'fashion', 'hero', 'cessna', 'lift', 'saicmecrazi', 'woohoo', 'raeann', 'avert', 'stonlogan', 'worm', 'cali', 'cockpit', 'cellphon', 'sunris', 'stogo', 'storymonth', 'graphic', 'ch', 'swivel', 'sunset', 'painless', 'chees', 'sewher', 'miracl', 'allergi', 'recoveri', 'relief', 'stralia', 'hollywood', 'bois', 'star', 'congratul', 'reunit', 'omg', 'delight', 'phenomen', 'aww', 'sshalf', 'calm', 'roll', 'restr', 'mn', 'tacki', 'mountain', 'instal', 'fo', 'ssari', 'sneyworld', 'stair', 'medal', 'greatest', 'beani', 'fab', 'ssorpaul', 'blueman', 'smooth', 'concert', 'eliz', 'seduct', 'sney', 'energi', 'sweetheart', 'ssicajaym', 'rn'}
+2021-11-13 22:29:04,783 - root : DEBUG : Negative words : {'alon', 'bother', 'upset', 'log', 'exist', 'disconnect', 'floor', 'prepar', 'queue', 'funer', 'public', 'troubl', 'disappear', 'sister', 'extend', 'dog', 'decid', 'nobodi', 'avoid', 'volum', 'knew', 'advis', 'stead', 'forgot', 'plenti', 'ugh', 'hung', 'bin', 'overbook', 'attitud', 'mon', 'fuel', 'partner', 'main', 'dividend', 'disgust', 'yell', 'mobil', 'tarmac', 'nightmar', 'dollar', 'shame', 'altern', 'waiv', 'crappi', 'smh', 'rerout', 'anymor', 'flightat', 'damag', 'cloth', 'transfer', 'diff', 'merg', 'wors', 'unaccept', 'embarrass', 'rent', 'door', 'suitcas', 'wtf', 'rd', 'unhappi', 'swer', 'excus', 'jetway', 'deplan', 'useless', 'estim', 'clue', 'unhelp', 'fund', 'regard', 'imposs', 'auto', 'sell', 'redeem', 'worst', 'courtesi', 'hire', 'ruin', 'autom', 'dont', 'incompet', 'callback', 'error', 'lack', 'unprofession', 'merger', 'taxi', 'order', 'rude', 'rate', 'lie', 'compens', 'paid', 'annoy', 'equip', 'result', 'failur'}
+
+2021-11-13 22:29:04,783 - root : INFO : Creating classification target...
+2021-11-13 22:29:04,787 - root : INFO : Calculating number of positive and negative words....
+
+2021-11-13 22:29:04,807 - root : INFO : Adding a constant to all columns that have negative values....
+
+2021-11-13 22:29:04,812 - root : DEBUG : Dataset header:
+   target                                               text  word_count  vader_compound  vader_positive  vader_negative  vader_neutral  vader_prediction  pos_count  neg_count
+0       1                                             [said]           1          1.0000           0.000           0.000          1.000                 1          0          0
+1       2                      [ad, commerci, experi, tacki]           4          1.0000           0.000           0.000          1.000                 1          1          0
+2       1                      [st, mean, need, take, anoth]           5          1.0000           0.000           0.000          1.000                 1          0          0
+3       0  [realli, aggress, blast, obnoxi, entertain, gu...          10          0.6694           0.187           0.345          0.468                 0          0          0
+4       0                          [realli, big, bad, thing]           4          0.4171           0.000           0.557          0.443                 0          0          0
+
+2021-11-13 22:29:04,815 - root : INFO : [Majority classifier     ] Accuracy score : 0.62691 ± 0.00000
+2021-11-13 22:29:04,815 - root : INFO : [Majority classifier     ] Brier score    : 1.86515 ± 0.00000
+
+2021-11-13 22:29:04,817 - root : INFO : [Vader features [if-else]] Accuracy score : 0.47739 ± 0.00000
+2021-11-13 22:29:04,817 - root : INFO : [Vader features [if-else]] Brier score    : nan ± nan
+
+2021-11-13 22:29:04,843 - root : INFO : [Vader Features [MNB]    ] Accuracy score : 0.62691 ± 0.00027
+2021-11-13 22:29:04,843 - root : INFO : [Vader Features [MNB]    ] Brier score    : 0.49625 ± 0.00480
+
+2021-11-13 22:29:04,875 - root : INFO : [Vader Features Ext [MNB]] Accuracy score : 0.65383 ± 0.00575
+2021-11-13 22:29:04,875 - root : INFO : [Vader Features Ext [MNB]] Brier score    : 0.44630 ± 0.01256
+
+2021-11-13 22:29:04,910 - root : INFO : [Vader Features [GNB]    ] Accuracy score : 0.62801 ± 0.01652
+2021-11-13 22:29:04,910 - root : INFO : [Vader Features [GNB]    ] Brier score    : 0.51643 ± 0.02445
+
+2021-11-13 22:29:04,948 - root : INFO : [Vader Features Ext [GNB]] Accuracy score : 0.64126 ± 0.02175
+2021-11-13 22:29:04,948 - root : INFO : [Vader Features Ext [GNB]] Brier score    : 0.59970 ± 0.03876
+
+2021-11-13 22:29:05,127 - root : INFO : [Vader Features [DT]     ] Accuracy score : 0.62930 ± 0.00953
+2021-11-13 22:29:05,127 - root : INFO : [Vader Features [DT]     ] Brier score    : 0.55310 ± 0.01648
+
+2021-11-13 22:29:05,365 - root : INFO : [Vader Features Ext [DT] ] Accuracy score : 0.64406 ± 0.01992
+2021-11-13 22:29:05,365 - root : INFO : [Vader Features Ext [DT] ] Brier score    : 0.53621 ± 0.02140
+
+2021-11-13 22:29:06,027 - root : INFO : [Vader Features [KNN]    ] Accuracy score : 0.56359 ± 0.03967
+2021-11-13 22:29:06,027 - root : INFO : [Vader Features [KNN]    ] Brier score    : 0.60066 ± 0.07126
+
+2021-11-13 22:29:06,756 - root : INFO : [Vader Features Ext [KNN]] Accuracy score : 0.64925 ± 0.02937
+2021-11-13 22:29:06,756 - root : INFO : [Vader Features Ext [KNN]] Brier score    : 0.51354 ± 0.04313
+
+2021-11-13 22:29:14,471 - root : INFO : [Vader Features [RF]     ] Accuracy score : 0.64406 ± 0.01079
+2021-11-13 22:29:14,471 - root : INFO : [Vader Features [RF]     ] Brier score    : 0.48570 ± 0.01427
+
+2021-11-13 22:29:21,726 - root : INFO : [Vader Features Ext [RF] ] Accuracy score : 0.66059 ± 0.02144
+2021-11-13 22:29:21,727 - root : INFO : [Vader Features Ext [RF] ] Brier score    : 0.45795 ± 0.01839
 
