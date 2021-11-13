@@ -1,0 +1,4 @@
+{
+  "columns" : ["airline_sentiment", "text"],
+  "mapping_function" : null
+}
