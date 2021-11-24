@@ -1,14 +1,13 @@
-import nltk
-from nltk import FreqDist
-from nltk.tokenize import RegexpTokenizer
-from nltk import PorterStemmer
-from nltk import WordNetLemmatizer
-from pandas import DataFrame
 from sklearn.preprocessing import LabelEncoder
-
-from src.utilities import NLTKAnalyzer
+from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.tokenize import RegexpTokenizer
+from nltk import WordNetLemmatizer
+from nltk import PorterStemmer
+from nltk import FreqDist
+from pandas import DataFrame
 
 import pandas
+import nltk
 import json
 import os
 import re
@@ -32,22 +31,27 @@ def clean_text (dataset : DataFrame, column : str, punct : str, stopwords : list
 
 	# Define some private function
 	def clean_url (text) :
-		return re.sub(r'((www.[^s]+)|(https?://[^s]+)|(@[^s]+)|(#[^s]+))', '', text)
+		return ' '.join(re.sub(r'((www.\S+)|(http?://\S+))', '', text).split())
 
 	def clean_mentions (text) :
-		return re.sub(r'((@[^s]+)|(#[^s]+))', '', text)
+		return ' '.join(re.sub(r'((@\S+)|(#\S+))', '', text).split())
 
 	def clean_emoji (text) :
-		return re.sub(r'\W+', ' ', text)
+		return ' '.join(re.sub(r'\W+', ' ', text).split())
 
 	def clean_punctuation (text) :
 		return text.translate(text.maketrans('', '', punct))
 
 	def clean_numeric (text) :
-		return re.sub(r'[0-9]+', '', text)
+		return ' '.join(re.sub(r'[0-9]+', '', text).split())
 
 	def clean_stopwords (text) :
 		return ' '.join([word for word in str(text).split() if word not in stopwords])
+
+	# Save semi-clean text
+	dataset['text'] = dataset[column].copy()
+	dataset['text'] = dataset['text'].apply(lambda x : clean_url(x))
+	dataset['text'] = dataset['text'].apply(lambda x : clean_mentions(x))
 
 	# To lowercase
 	dataset[column] = dataset[column].str.lower()
@@ -77,7 +81,7 @@ def clean_text (dataset : DataFrame, column : str, punct : str, stopwords : list
 
 def compute_polarity (dataset : DataFrame, column : str) -> DataFrame :
 	# Define VADER (Valence Aware Dictionary and sEntiment Reasoner)
-	analyzer = NLTKAnalyzer()
+	analyzer = SentimentIntensityAnalyzer()
 
 	# Define private method
 	def vader_predict (score: float) -> str :
@@ -86,10 +90,10 @@ def compute_polarity (dataset : DataFrame, column : str) -> DataFrame :
 		return 'neutral'
 
 	# Add VADER polarity scores
-	dataset['vader_compound'] = dataset[column].apply(lambda x : analyzer.get_compound_score(text = x))
-	dataset['vader_positive'] = dataset[column].apply(lambda x : analyzer.get_positive_score(text = x))
-	dataset['vader_negative'] = dataset[column].apply(lambda x : analyzer.get_negative_score(text = x))
-	dataset['vader_neutral'] = dataset[column].apply(lambda x : analyzer.get_neutral_score(text = x))
+	dataset['vader_compound'] = dataset[column].apply(lambda x : analyzer.polarity_scores(x)['compound'])
+	dataset['vader_positive'] = dataset[column].apply(lambda x : analyzer.polarity_scores(x)['pos'])
+	dataset['vader_negative'] = dataset[column].apply(lambda x : analyzer.polarity_scores(x)['neg'])
+	dataset['vader_neutral']  = dataset[column].apply(lambda x : analyzer.polarity_scores(x)['neu'])
 
 	# Add VADER prediction
 	dataset['vader_prediction'] = dataset['vader_compound'].apply(lambda x : vader_predict(score = x))

@@ -31,12 +31,6 @@ def create_logger (filename : str = None, level : int = logging.DEBUG) -> Logger
 	logger.addHandler(handler)
 
 	return logger
-	# 	filename = filename,
-	# 	filemode = 'w',
-	# 	format = '%(asctime)s - %(name)s : %(levelname)s : %(message)s',
-	# 	encoding = 'UTF-8',
-	# 	level = level
-	# )
 
 def download_resources (logger : Logger) -> None :
 	logger.info('Downloading [stopwords] from [nltk]...')
@@ -60,6 +54,8 @@ def main (logger : Logger) -> None :
 	dataset = dataset[config['columns']]
 	dataset = dataset.rename(columns = {'airline_sentiment' : 'target'})
 
+	dataset['tokens'] = dataset['text']
+
 	logger.info('Checking for any missing values in the dataset...\n')
 	logger.debug('Missing values:\n' + str(dataset.isnull().sum()) + '\n')
 	logger.debug('Dataset header:\n' + str(dataset.head()) + '\n')
@@ -73,23 +69,23 @@ def main (logger : Logger) -> None :
 	logger.debug('Sentiment distribution:\n' + str(distribution) + '\n')
 
 	logger.info('Cleaning dataset text...')
-	dataset = clean_text(dataset = dataset, column = 'text', stopwords = en_stopwords, punct = en_punct)
+	dataset = clean_text(dataset = dataset, column = 'tokens', stopwords = en_stopwords, punct = en_punct)
 
 	logger.info('Calculating polarity scores...')
-	dataset = compute_polarity(dataset = dataset, column = 'text')
+	dataset = compute_polarity(dataset = dataset, column = 'tokens')
 
 	logger.info('Tokenizing dataset text...')
-	dataset = tokenize_text(dataset = dataset, column = 'text')
+	dataset = tokenize_text(dataset = dataset, column = 'tokens')
 
 	logger.info('Stemming dataset text...')
-	dataset = stem_tokens(dataset = dataset, column = 'text')
+	dataset = stem_tokens(dataset = dataset, column = 'tokens')
 
 	logger.info('Lemmatizing dataset text...\n')
-	dataset = lemmatize_tokens(dataset = dataset, column = 'text')
+	dataset = lemmatize_tokens(dataset = dataset, column = 'tokens')
 
 	logger.debug('Dataset header:\n' + str(dataset.head()) + '\n')
 
-	pos_words, neg_words = sentimental_words(dataset = dataset, column = 'text', target = 'target', top = 100)
+	pos_words, neg_words = sentimental_words(dataset = dataset, column = 'tokens', target = 'target', top = 100)
 
 	logger.debug('Positive words : ' + str(pos_words))
 	logger.debug('Negative words : ' + str(neg_words))

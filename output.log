@@ -1,92 +1,141 @@
-2021-11-13 22:32:10,298 - root : INFO : Downloading [stopwords] from [nltk]...
-2021-11-13 22:32:10,443 - root : INFO : Downloading [names] from [nltk]...
-2021-11-13 22:32:10,444 - root : INFO : Downloading [wordnet] from [nltk]...
-2021-11-13 22:32:10,460 - root : INFO : Downloading [vader_lexicon] from [nltk]...
+2021-11-24 19:01:28,563 - root : INFO : Downloading [stopwords] from [nltk]...
+2021-11-24 19:01:28,616 - root : INFO : Downloading [names] from [nltk]...
+2021-11-24 19:01:28,617 - root : INFO : Downloading [wordnet] from [nltk]...
+2021-11-24 19:01:28,634 - root : INFO : Downloading [vader_lexicon] from [nltk]...
 
-2021-11-13 22:32:10,460 - root : INFO : Loading dataset and configuration files...
-2021-11-13 22:32:10,512 - root : INFO : Checking for any missing values in the dataset...
+2021-11-24 19:01:28,634 - root : INFO : Loading dataset and configuration files...
+2021-11-24 19:01:28,704 - root : INFO : Checking for any missing values in the dataset...
 
-2021-11-13 22:32:10,513 - root : DEBUG : Missing values:
+2021-11-24 19:01:28,706 - root : DEBUG : Missing values:
 target    0
 text      0
+tokens    0
 dtype: int64
 
-2021-11-13 22:32:10,515 - root : DEBUG : Dataset header:
-     target                                               text
-0   neutral                @VirginAmerica What @dhepburn said.
-1  positive  @VirginAmerica plus you've added commercials t...
-2   neutral  @VirginAmerica I didn't today... Must mean I n...
-3  negative  @VirginAmerica it's really aggressive to blast...
-4  negative  @VirginAmerica and it's a really big bad thing...
+2021-11-24 19:01:28,708 - root : DEBUG : Dataset header:
+     target                                               text                                             tokens
+0   neutral                @VirginAmerica What @dhepburn said.                @VirginAmerica What @dhepburn said.
+1  positive  @VirginAmerica plus you've added commercials t...  @VirginAmerica plus you've added commercials t...
+2   neutral  @VirginAmerica I didn't today... Must mean I n...  @VirginAmerica I didn't today... Must mean I n...
+3  negative  @VirginAmerica it's really aggressive to blast...  @VirginAmerica it's really aggressive to blast...
+4  negative  @VirginAmerica and it's a really big bad thing...  @VirginAmerica and it's a really big bad thing...
 
-2021-11-13 22:32:10,517 - root : DEBUG : Sentiment distribution:
+2021-11-24 19:01:28,711 - root : DEBUG : Sentiment distribution:
           count  frequency
 negative   9178   0.626913
 neutral    3099   0.211680
 positive   2363   0.161407
 
-2021-11-13 22:32:10,517 - root : INFO : Cleaning dataset text...
-2021-11-13 22:32:18,799 - root : INFO : Calculating polarity scores...
-2021-11-13 22:32:23,232 - root : INFO : Tokenizing dataset text...
-2021-11-13 22:32:23,274 - root : INFO : Stemming dataset text...
-2021-11-13 22:32:24,668 - root : INFO : Lemmatizing dataset text...
+2021-11-24 19:01:28,711 - root : INFO : Cleaning dataset text...
+2021-11-24 19:01:38,261 - root : INFO : Calculating polarity scores...
+2021-11-24 19:01:43,184 - root : INFO : Tokenizing dataset text...
+2021-11-24 19:01:43,218 - root : INFO : Stemming dataset text...
+2021-11-24 19:01:44,731 - root : INFO : Lemmatizing dataset text...
 
-2021-11-13 22:32:25,815 - root : DEBUG : Dataset header:
-     target                                               text  word_count  vader_compound  vader_positive  vader_negative  vader_neutral vader_prediction
-0   neutral                                             [said]           1          0.0000           0.000           0.000          1.000          neutral
-1  positive                      [ad, commerci, experi, tacki]           4          0.0000           0.000           0.000          1.000          neutral
-2   neutral                      [st, mean, need, take, anoth]           5          0.0000           0.000           0.000          1.000          neutral
-3  negative  [realli, aggress, blast, obnoxi, entertain, gu...          10         -0.3306           0.187           0.345          0.468         negative
-4  negative                          [realli, big, bad, thing]           4         -0.5829           0.000           0.557          0.443         negative
+2021-11-24 19:01:45,952 - root : DEBUG : Dataset header:
+     target                                               text                                             tokens  word_count  vader_compound  vader_positive  vader_negative  vader_neutral vader_prediction
+0   neutral                                         What said.                                             [said]           1          0.0000           0.000           0.000          1.000          neutral
+1  positive  plus you've added commercials to the experienc...                 [plu, ad, commerci, experi, tacki]           5          0.0000           0.000           0.000          1.000          neutral
+2   neutral  I didn't today... Must mean I need to take ano...             [today, must, mean, need, take, anoth]           6          0.0000           0.000           0.000          1.000          neutral
+3  negative  it's really aggressive to blast obnoxious "ent...  [realli, aggress, blast, obnoxi, entertain, gu...          10         -0.3306           0.187           0.345          0.468         negative
+4  negative           and it's a really big bad thing about it                          [realli, big, bad, thing]           4         -0.5829           0.000           0.557          0.443         negative
 
-2021-11-13 22:32:26,723 - root : DEBUG : Positive words : {'whoa', 'sparkl', 'sunris', 'gma', 'sunset', 'oui', 'iconographi', 'cb', 'swivel', 'pleasur', 'sofli', 'cellphon', 'revu', 'ssbook', 'sneyworld', 'liveri', 'sjblue', 'phenomen', 'sney', 'selfi', 'congratul', 'miracl', 'mn', 'wc', 'concert', 'stogo', 'beani', 'stralia', 'blueman', 'bright', 'cream', 'cessna', 'relief', 'smoothest', 'm', 'fab', 'tacki', 'recoveri', 'sdwpkk', 'aww', 'cockpit', 'instal', 'greatest', 'eliz', 'ssorpaul', 'bois', 'stair', 'sxu', 'delight', 'gosh', 'painless', 'lift', 'hero', 'trv', 'sshalf', 'ssicajaym', 'avert', 'star', 'fo', 'allergi', 'caribbean', 'sedholm', 'secomeback', 'reunit', 'minim', 'medal', 'fashion', 'rollercoast', 'resol', 'energi', 'sanfrancisco', 'raeann', 'sweetheart', 'sewher', 'santli', 'restr', 'omg', 'ch', 'seduct', 'chees', 'stonlogan', 'rn', 'calm', 'roll', 'killeen', 'yummi', 'cali', 'worm', 'ssari', 'milan', 'smooth', 'xoxo', 'storymonth', 'grate', 'mountain', 'woohoo', 'hollywood', 'graphic', 'chocol', 'saicmecrazi'}
-2021-11-13 22:32:26,723 - root : DEBUG : Negative words : {'dog', 'error', 'volum', 'prepar', 'excus', 'paid', 'bother', 'suitcas', 'result', 'ruin', 'incompet', 'nightmar', 'diff', 'nobodi', 'decid', 'imposs', 'redeem', 'compens', 'disgust', 'equip', 'dont', 'public', 'forgot', 'taxi', 'overbook', 'mon', 'merger', 'upset', 'worst', 'jetway', 'unhappi', 'annoy', 'regard', 'rent', 'autom', 'rate', 'rd', 'clue', 'lack', 'yell', 'plenti', 'stead', 'exist', 'knew', 'ugh', 'avoid', 'swer', 'advis', 'partner', 'courtesi', 'merg', 'main', 'cloth', 'floor', 'damag', 'unhelp', 'altern', 'unaccept', 'mobil', 'fuel', 'estim', 'hire', 'rude', 'anymor', 'sell', 'waiv', 'dollar', 'troubl', 'smh', 'disconnect', 'dividend', 'crappi', 'shame', 'deplan', 'wors', 'auto', 'disappear', 'extend', 'embarrass', 'unprofession', 'fund', 'attitud', 'sister', 'lie', 'wtf', 'hung', 'funer', 'log', 'rerout', 'callback', 'flightat', 'alon', 'transfer', 'failur', 'order', 'tarmac', 'queue', 'bin', 'door', 'useless'}
-2021-11-13 22:32:26,723 - root : INFO : Creating classification target...
-2021-11-13 22:32:26,727 - root : INFO : Calculating number of positive and negative words....
+2021-11-24 19:01:47,115 - root : DEBUG : Positive words : {'nomin', 'swivel', 'medal', 'revu', 'gosh', 'iconographi', 'ooh', 'amazingli', 'bois', 'cellphon', 'greatest', 'bubbl', 'classiq', 'hug', 'fella', 'cali', 'dbcvepnqc', 'smoothest', 'naelah', 'recognit', 'fo', 'blueman', 'utah', 'killeen', 'trv', 'cessna', 'avert', 'concert', 'stair', 'worm', 'moodlight', 'recogn', 'fab', 'aww', 'hipster', 'hero', 'beani', 'gaga', 'chees', 'chocol', 'cream', 'lift', 'pleasur', 'sweetheart', 'painless', 'minim', 'raeann', 'resol', 'nicest', 'gfc', 'silicon', 'bos', 'rn', 'fashion', 'mountain', 'woohoo', 'gma', 'xoxo', 'greetingz', 'rollercoast', 'valley', 'oui', 'sedholm', 'calm', 'product', 'm', 'cb', 'cockpit', 'wc', 'caribbean', 'milan', 'andrew', 'friendliest', 'spotifi', 'recoveri', 'pleasantli', 'graphic', 'eliz', 'relief', 'delight', 'restr', 'phenomen', 'energi', 'selfi', 'star', 'liveri', 'tacki', 'chief', 'ch', 'mn', 'hollywood', 'anchorag', 'virginamerica', 'allergi', 'frontrunn', 'shoutout', 'grate', 'yummi', 'smooth', 'happier'}
+2021-11-24 19:01:47,115 - root : DEBUG : Negative words : {'extend', 'unhappi', 'alon', 'result', 'disgust', 'exist', 'third', 'funer', 'bin', 'write', 'cloth', 'broke', 'confus', 'suitcas', 'incompet', 'equip', 'cab', 'troubl', 'avoid', 'lack', 'taxi', 'queue', 'wtf', 'rent', 'piss', 'embarrass', 'profit', 'volum', 'hundr', 'order', 'insult', 'rerout', 'yell', 'unhelp', 'sister', 'merg', 'pathet', 'diff', 'courtesi', 'mon', 'wors', 'failur', 'overbook', 'public', 'crappi', 'damag', 'flightat', 'normal', 'merger', 'fuel', 'nightmar', 'callback', 'autom', 'unprofession', 'fire', 'anymor', 'paid', 'estim', 'crap', 'dividend', 'unaccept', 'dog', 'upset', 'attitud', 'mobil', 'decid', 'log', 'ruin', 'advis', 'disast', 'dont', 'lie', 'bother', 'useless', 'deplan', 'clue', 'error', 'disconnect', 'fund', 'nobodi', 'imposs', 'worst', 'rude', 'rate', 'door', 'midnight', 'jetway', 'excus', 'plenti', 'hire', 'shame', 'prepar', 'charact', 'floor', 'hung', 'auto', 'sell', 'main', 'rd', 'annoy'}
+2021-11-24 19:01:47,115 - root : INFO : Creating classification target...
+2021-11-24 19:01:47,119 - root : INFO : Calculating number of positive and negative words....
 
-2021-11-13 22:32:26,749 - root : INFO : Adding a constant to all columns that have negative values....
+2021-11-24 19:01:47,184 - root : INFO : Adding a constant to all columns that have negative values....
 
-2021-11-13 22:32:26,754 - root : DEBUG : Dataset header:
-   target                                               text  word_count  vader_compound  vader_positive  vader_negative  vader_neutral  vader_prediction  pos_count  neg_count
-0       1                                             [said]           1          1.0000           0.000           0.000          1.000                 1          0          0
-1       2                      [ad, commerci, experi, tacki]           4          1.0000           0.000           0.000          1.000                 1          1          0
-2       1                      [st, mean, need, take, anoth]           5          1.0000           0.000           0.000          1.000                 1          0          0
-3       0  [realli, aggress, blast, obnoxi, entertain, gu...          10          0.6694           0.187           0.345          0.468                 0          0          0
-4       0                          [realli, big, bad, thing]           4          0.4171           0.000           0.557          0.443                 0          0          0
+2021-11-24 19:01:47,189 - root : DEBUG : Dataset header:
+   target                                               text                                             tokens  word_count  vader_compound  vader_positive  vader_negative  vader_neutral  vader_prediction  pos_count  neg_count
+0       1                                         What said.                                             [said]           1          1.0000           0.000           0.000          1.000                 1          0          0
+1       2  plus you've added commercials to the experienc...                 [plu, ad, commerci, experi, tacki]           5          1.0000           0.000           0.000          1.000                 1          2          0
+2       1  I didn't today... Must mean I need to take ano...             [today, must, mean, need, take, anoth]           6          1.0000           0.000           0.000          1.000                 1          1          0
+3       0  it's really aggressive to blast obnoxious "ent...  [realli, aggress, blast, obnoxi, entertain, gu...          10          0.6694           0.187           0.345          0.468                 0          2          0
+4       0           and it's a really big bad thing about it                          [realli, big, bad, thing]           4          0.4171           0.000           0.557          0.443                 0          0          0
 
-2021-11-13 22:32:26,757 - root : INFO : [Majority classifier     ] Accuracy score : 0.62691 ± 0.00000
-2021-11-13 22:32:26,758 - root : INFO : [Majority classifier     ] Brier score    : 1.27138 ± 0.00000
+2021-11-24 19:01:47,196 - root : INFO : [Majority classifier     ] Accuracy    : 0.62691 ± 0.00000
+2021-11-24 19:01:47,196 - root : INFO : [Majority classifier     ] Precision   : 0.39302 ± 0.00000
+2021-11-24 19:01:47,196 - root : INFO : [Majority classifier     ] Recall      : 0.62691 ± 0.00000
+2021-11-24 19:01:47,196 - root : INFO : [Majority classifier     ] F1 score    : 0.48315 ± 0.00000
+2021-11-24 19:01:47,196 - root : INFO : [Majority classifier     ] Brier score : 1.32501 ± 0.00000
 
-2021-11-13 22:32:26,759 - root : INFO : [Vader [compound score]  ] Accuracy score : 0.47739 ± 0.00000
-2021-11-13 22:32:26,759 - root : INFO : [Vader [compound score]  ] Brier score    : nan ± nan
+2021-11-24 19:01:47,201 - root : INFO : [Vader [compound score]  ] Accuracy    : 0.50355 ± 0.00000
+2021-11-24 19:01:47,201 - root : INFO : [Vader [compound score]  ] Precision   : 0.68975 ± 0.00000
+2021-11-24 19:01:47,201 - root : INFO : [Vader [compound score]  ] Recall      : 0.50355 ± 0.00000
+2021-11-24 19:01:47,201 - root : INFO : [Vader [compound score]  ] F1 score    : 0.52586 ± 0.00000
+2021-11-24 19:01:47,201 - root : INFO : [Vader [compound score]  ] Brier score : nan ± nan
 
-2021-11-13 22:32:26,787 - root : INFO : [Vader Features [MNB]    ] Accuracy score : 0.62691 ± 0.00027
-2021-11-13 22:32:26,787 - root : INFO : [Vader Features [MNB]    ] Brier score    : 0.49625 ± 0.00480
+2021-11-24 19:01:47,236 - root : INFO : [Vader Features [MNB]    ] Accuracy    : 0.63135 ± 0.00159
+2021-11-24 19:01:47,236 - root : INFO : [Vader Features [MNB]    ] Precision   : 0.52328 ± 0.02532
+2021-11-24 19:01:47,236 - root : INFO : [Vader Features [MNB]    ] Recall      : 0.63135 ± 0.00159
+2021-11-24 19:01:47,236 - root : INFO : [Vader Features [MNB]    ] F1 score    : 0.49336 ± 0.00326
+2021-11-24 19:01:47,236 - root : INFO : [Vader Features [MNB]    ] Brier score : 0.47832 ± 0.00362
 
-2021-11-13 22:32:26,819 - root : INFO : [Vader Features Ext [MNB]] Accuracy score : 0.65383 ± 0.00575
-2021-11-13 22:32:26,819 - root : INFO : [Vader Features Ext [MNB]] Brier score    : 0.44630 ± 0.01256
+2021-11-24 19:01:47,278 - root : INFO : [Vader Features Ext [MNB]] Accuracy    : 0.66667 ± 0.00730
+2021-11-24 19:01:47,278 - root : INFO : [Vader Features Ext [MNB]] Precision   : 0.52829 ± 0.01316
+2021-11-24 19:01:47,278 - root : INFO : [Vader Features Ext [MNB]] Recall      : 0.66667 ± 0.00730
+2021-11-24 19:01:47,278 - root : INFO : [Vader Features Ext [MNB]] F1 score    : 0.56401 ± 0.00947
+2021-11-24 19:01:47,278 - root : INFO : [Vader Features Ext [MNB]] Brier score : 0.44168 ± 0.00910
 
-2021-11-13 22:32:26,854 - root : INFO : [Vader Features [GNB]    ] Accuracy score : 0.62801 ± 0.01652
-2021-11-13 22:32:26,854 - root : INFO : [Vader Features [GNB]    ] Brier score    : 0.51643 ± 0.02445
+2021-11-24 19:01:47,324 - root : INFO : [Vader Features [GNB]    ] Accuracy    : 0.65669 ± 0.00944
+2021-11-24 19:01:47,324 - root : INFO : [Vader Features [GNB]    ] Precision   : 0.61473 ± 0.03661
+2021-11-24 19:01:47,324 - root : INFO : [Vader Features [GNB]    ] Recall      : 0.65669 ± 0.00944
+2021-11-24 19:01:47,324 - root : INFO : [Vader Features [GNB]    ] F1 score    : 0.58975 ± 0.00609
+2021-11-24 19:01:47,324 - root : INFO : [Vader Features [GNB]    ] Brier score : 0.49138 ± 0.01647
 
-2021-11-13 22:32:26,894 - root : INFO : [Vader Features Ext [GNB]] Accuracy score : 0.64126 ± 0.02175
-2021-11-13 22:32:26,894 - root : INFO : [Vader Features Ext [GNB]] Brier score    : 0.59970 ± 0.03876
+2021-11-24 19:01:47,374 - root : INFO : [Vader Features Ext [GNB]] Accuracy    : 0.66701 ± 0.01701
+2021-11-24 19:01:47,374 - root : INFO : [Vader Features Ext [GNB]] Precision   : 0.67549 ± 0.01972
+2021-11-24 19:01:47,374 - root : INFO : [Vader Features Ext [GNB]] Recall      : 0.66701 ± 0.01701
+2021-11-24 19:01:47,374 - root : INFO : [Vader Features Ext [GNB]] F1 score    : 0.66645 ± 0.01844
+2021-11-24 19:01:47,374 - root : INFO : [Vader Features Ext [GNB]] Brier score : 0.48276 ± 0.02316
 
-2021-11-13 22:32:27,083 - root : INFO : [Vader Features [DT]     ] Accuracy score : 0.62978 ± 0.01000
-2021-11-13 22:32:27,083 - root : INFO : [Vader Features [DT]     ] Brier score    : 0.55268 ± 0.01805
+2021-11-24 19:01:47,601 - root : INFO : [Vader Features [DT]     ] Accuracy    : 0.64836 ± 0.01584
+2021-11-24 19:01:47,601 - root : INFO : [Vader Features [DT]     ] Precision   : 0.59086 ± 0.01850
+2021-11-24 19:01:47,601 - root : INFO : [Vader Features [DT]     ] Recall      : 0.64836 ± 0.01584
+2021-11-24 19:01:47,601 - root : INFO : [Vader Features [DT]     ] F1 score    : 0.60424 ± 0.01497
+2021-11-24 19:01:47,601 - root : INFO : [Vader Features [DT]     ] Brier score : 0.53477 ± 0.02635
 
-2021-11-13 22:32:27,332 - root : INFO : [Vader Features Ext [DT] ] Accuracy score : 0.64508 ± 0.01958
-2021-11-13 22:32:27,332 - root : INFO : [Vader Features Ext [DT] ] Brier score    : 0.53398 ± 0.02185
+2021-11-24 19:01:47,916 - root : INFO : [Vader Features Ext [DT] ] Accuracy    : 0.64242 ± 0.01868
+2021-11-24 19:01:47,916 - root : INFO : [Vader Features Ext [DT] ] Precision   : 0.62914 ± 0.02018
+2021-11-24 19:01:47,916 - root : INFO : [Vader Features Ext [DT] ] Recall      : 0.64242 ± 0.01868
+2021-11-24 19:01:47,916 - root : INFO : [Vader Features Ext [DT] ] F1 score    : 0.63394 ± 0.01855
+2021-11-24 19:01:47,916 - root : INFO : [Vader Features Ext [DT] ] Brier score : 0.59713 ± 0.03138
 
-2021-11-13 22:32:28,020 - root : INFO : [Vader Features [KNN]    ] Accuracy score : 0.56359 ± 0.03967
-2021-11-13 22:32:28,021 - root : INFO : [Vader Features [KNN]    ] Brier score    : 0.60066 ± 0.07126
+2021-11-24 19:01:48,603 - root : INFO : [Vader Features [KNN]    ] Accuracy    : 0.62903 ± 0.01705
+2021-11-24 19:01:48,603 - root : INFO : [Vader Features [KNN]    ] Precision   : 0.65654 ± 0.01769
+2021-11-24 19:01:48,603 - root : INFO : [Vader Features [KNN]    ] Recall      : 0.62903 ± 0.01705
+2021-11-24 19:01:48,603 - root : INFO : [Vader Features [KNN]    ] F1 score    : 0.63338 ± 0.01180
+2021-11-24 19:01:48,603 - root : INFO : [Vader Features [KNN]    ] Brier score : 0.53500 ± 0.03948
 
-2021-11-13 22:32:28,787 - root : INFO : [Vader Features Ext [KNN]] Accuracy score : 0.64925 ± 0.02937
-2021-11-13 22:32:28,787 - root : INFO : [Vader Features Ext [KNN]] Brier score    : 0.51354 ± 0.04313
+2021-11-24 19:01:49,275 - root : INFO : [Vader Features Ext [KNN]] Accuracy    : 0.65307 ± 0.01037
+2021-11-24 19:01:49,275 - root : INFO : [Vader Features Ext [KNN]] Precision   : 0.63252 ± 0.01689
+2021-11-24 19:01:49,275 - root : INFO : [Vader Features Ext [KNN]] Recall      : 0.65307 ± 0.01037
+2021-11-24 19:01:49,275 - root : INFO : [Vader Features Ext [KNN]] F1 score    : 0.63805 ± 0.01438
+2021-11-24 19:01:49,275 - root : INFO : [Vader Features Ext [KNN]] Brier score : 0.50081 ± 0.01700
 
-2021-11-13 22:32:37,013 - root : INFO : [Vader Features [RF]     ] Accuracy score : 0.64337 ± 0.01043
-2021-11-13 22:32:37,013 - root : INFO : [Vader Features [RF]     ] Brier score    : 0.48610 ± 0.01439
+2021-11-24 19:01:58,771 - root : INFO : [Vader Features [RF]     ] Accuracy    : 0.66742 ± 0.01298
+2021-11-24 19:01:58,771 - root : INFO : [Vader Features [RF]     ] Precision   : 0.61090 ± 0.01508
+2021-11-24 19:01:58,771 - root : INFO : [Vader Features [RF]     ] Recall      : 0.66742 ± 0.01298
+2021-11-24 19:01:58,771 - root : INFO : [Vader Features [RF]     ] F1 score    : 0.61848 ± 0.01110
+2021-11-24 19:01:58,771 - root : INFO : [Vader Features [RF]     ] Brier score : 0.45730 ± 0.01563
 
-2021-11-13 22:32:44,851 - root : INFO : [Vader Features Ext [RF] ] Accuracy score : 0.66141 ± 0.02221
-2021-11-13 22:32:44,851 - root : INFO : [Vader Features Ext [RF] ] Brier score    : 0.45713 ± 0.01925
+2021-11-24 19:02:07,893 - root : INFO : [Vader Features Ext [RF] ] Accuracy    : 0.67719 ± 0.01424
+2021-11-24 19:02:07,893 - root : INFO : [Vader Features Ext [RF] ] Precision   : 0.65702 ± 0.01747
+2021-11-24 19:02:07,893 - root : INFO : [Vader Features Ext [RF] ] Recall      : 0.67719 ± 0.01424
+2021-11-24 19:02:07,893 - root : INFO : [Vader Features Ext [RF] ] F1 score    : 0.66287 ± 0.01551
+2021-11-24 19:02:07,893 - root : INFO : [Vader Features Ext [RF] ] Brier score : 0.45133 ± 0.01785
+
+2021-11-24 19:02:18,389 - root : INFO : [Vader Features [MV]     ] Accuracy    : 0.66892 ± 0.01301
+2021-11-24 19:02:18,389 - root : INFO : [Vader Features [MV]     ] Precision   : 0.61236 ± 0.01829
+2021-11-24 19:02:18,389 - root : INFO : [Vader Features [MV]     ] Recall      : 0.66892 ± 0.01301
+2021-11-24 19:02:18,389 - root : INFO : [Vader Features [MV]     ] F1 score    : 0.61767 ± 0.01279
+2021-11-24 19:02:18,389 - root : INFO : [Vader Features [MV]     ] Brier score : nan ± nan
+
+2021-11-24 19:02:28,972 - root : INFO : [Vader Features Ext [MV] ] Accuracy    : 0.67848 ± 0.01448
+2021-11-24 19:02:28,972 - root : INFO : [Vader Features Ext [MV] ] Precision   : 0.65517 ± 0.01777
+2021-11-24 19:02:28,972 - root : INFO : [Vader Features Ext [MV] ] Recall      : 0.67848 ± 0.01448
+2021-11-24 19:02:28,972 - root : INFO : [Vader Features Ext [MV] ] F1 score    : 0.66029 ± 0.01575
+2021-11-24 19:02:28,972 - root : INFO : [Vader Features Ext [MV] ] Brier score : nan ± nan
 

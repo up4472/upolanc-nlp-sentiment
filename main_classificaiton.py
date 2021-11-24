@@ -6,7 +6,7 @@ from src.dataset import encode_target
 from src.feature import vader_features
 from src.feature import vader_features_ext
 from src.models import evaluate_classification
-from src.models import train_model
+from src.models import train_classification
 
 import numpy
 
@@ -17,8 +17,20 @@ def __report (name : str, results : dict, logger : Logger) -> None :
 	mean_bs = numpy.mean(results['brier_score'])
 	std_bs = numpy.std(results['brier_score'])
 
-	logger.info(f'[{name:24}] Accuracy score : {mean_acc:.5f} \u00B1 {std_acc:.5f}')
-	logger.info(f'[{name:24}] Brier score    : {mean_bs:.5f} \u00B1 {std_bs:.5f}\n')
+	mean_pre = numpy.mean(results['precision'])
+	std_pre = numpy.std(results['precision'])
+
+	mean_rec = numpy.mean(results['recall'])
+	std_rec = numpy.std(results['recall'])
+
+	mean_f1 = numpy.mean(results['f1_score'])
+	std_f1 = numpy.std(results['f1_score'])
+
+	logger.info(f'[{name:24}] Accuracy    : {mean_acc:.5f} \u00B1 {std_acc:.5f}')
+	logger.info(f'[{name:24}] Precision   : {mean_pre:.5f} \u00B1 {std_pre:.5f}')
+	logger.info(f'[{name:24}] Recall      : {mean_rec:.5f} \u00B1 {std_rec:.5f}')
+	logger.info(f'[{name:24}] F1 score    : {mean_f1:.5f} \u00B1 {std_f1:.5f}')
+	logger.info(f'[{name:24}] Brier score : {mean_bs:.5f} \u00B1 {std_bs:.5f}\n')
 
 def __class_majority (dataset : DataFrame, logger : Logger) -> None :
 	majority = numpy.empty(shape = (len(dataset), 1))
@@ -54,7 +66,7 @@ def __class_vader (dataset : DataFrame, logger : Logger) -> None :
 def __class_vader_ml (dataset : DataFrame, model_name : str, logger : Logger) -> None :
 	xdata, ydata = vader_features(dataset = dataset)
 
-	results = train_model(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
+	results = train_classification(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
 
 	__report(
 		name = f'Vader Features [{model_name}]',
@@ -65,7 +77,7 @@ def __class_vader_ml (dataset : DataFrame, model_name : str, logger : Logger) ->
 def __class_vader_ml_ext (dataset : DataFrame, model_name : str, logger : Logger) -> None :
 	xdata, ydata = vader_features_ext(dataset = dataset)
 
-	results = train_model(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
+	results = train_classification(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
 
 	__report(
 		name = f'Vader Features Ext [{model_name}]',
@@ -91,7 +103,7 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	# VADER
 	__class_vader(dataset = dataset, logger = logger)
 
-	for name in ['MNB', 'GNB', 'DT', 'KNN', 'RF'] :
+	for name in ['MNB', 'GNB', 'DT', 'KNN', 'RF', 'MV'] :
 		__class_vader_ml(dataset = dataset, model_name = name, logger = logger)
 		__class_vader_ml_ext(dataset = dataset, model_name = name, logger = logger)
 
