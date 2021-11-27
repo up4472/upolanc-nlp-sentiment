@@ -13,9 +13,12 @@ from src.dataset import sentimental_words
 from src.dataset import stem_tokens
 from src.dataset import tokenize_text
 
+from matplotlib import pyplot
+
 import warnings
 import logging
 import pandas
+import numpy
 import string
 import nltk
 
@@ -68,6 +71,14 @@ def main (logger : Logger) -> None :
 	distribution['frequency'] = distribution['count'] / distribution['count'].sum()
 
 	logger.debug('Sentiment distribution:\n' + str(distribution) + '\n')
+
+	sizes = dataset['target'].value_counts()
+	colors = pyplot.cm.copper(numpy.linspace(0, 5, 9))
+	explode = [0.05, 0.05, 0.05]
+
+	pyplot.pie(sizes, labels = sizes.keys().tolist(), colors = colors, shadow = True, explode = explode)
+	pyplot.legend()
+	pyplot.savefig('out\\distribution.png')
 
 	dataset['tokens'] = dataset['text'].copy()
 
