@@ -52,7 +52,7 @@ def model_predict (model : Any, xdata : numpy.ndarray, ydata : numpy.array) ->  
 
 	return ydata, ypred, yprob
 
-def models_method (xdata : numpy.ndarray, ydata : numpy.array, model_name : str, k_fold : int = 5) -> dict :
+def models_kfold (xdata : numpy.ndarray, ydata : numpy.array, model_name : str, k_fold : int = 5) -> dict :
 	# Create model
 	model = create_classification(name = model_name)
 

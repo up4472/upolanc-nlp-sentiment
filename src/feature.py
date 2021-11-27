@@ -1,4 +1,7 @@
 from pandas import DataFrame
+from torch.utils.data import DataLoader
+from torch.utils.data import RandomSampler
+from torch.utils.data import TensorDataset
 from transformers import BertTokenizer
 from torch import LongTensor
 from torch import Tensor
@@ -23,7 +26,7 @@ def vader_features_ext (dataset : DataFrame) -> (numpy.ndarray, numpy.ndarray) :
 
 	return xdata, numpy.ravel(ydata)
 
-def bert_features (dataset : DataFrame) -> (Tensor, Tensor, LongTensor) :
+def bert_features (dataset : DataFrame) -> DataLoader :
 	tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case = True)
 
 	xdata = 'text'
@@ -38,8 +41,11 @@ def bert_features (dataset : DataFrame) -> (Tensor, Tensor, LongTensor) :
 		truncation = True
 	)
 
-	x = encoder['input_ids']
-	a = encoder['attention_mask']
-	y = LongTensor(dataset[ydata].values)
+	data = TensorDataset(encoder['input_ids'], encoder['attention_mask'], LongTensor(dataset[ydata].values))
+	dataloader = DataLoader(
+		dataset = data,
+		sampler = RandomSampler(data),
+		batch_size = 128
+	)
 
-	return x, a, y
+	return dataloader

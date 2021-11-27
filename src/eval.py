@@ -28,3 +28,12 @@ def evaluate_classification (ytrue : numpy.ndarray, ypred : numpy.ndarray, yprob
 		'f1_score' : _f1score,
 		'brier_score' : _brier
 	}
+
+def classification_to_list (results : dict) -> list :
+	acc = f'{numpy.mean(results["accuracy_score"]):.5f} \u00B1 {numpy.std(results["accuracy_score"]):.5f}'
+	pre = f'{numpy.mean(results["precision"]):.5f} \u00B1 {numpy.std(results["precision"]):.5f}'
+	rec = f'{numpy.mean(results["recall"]):.5f} \u00B1 {numpy.std(results["recall"]):.5f}'
+	f1s = f'{numpy.mean(results["f1_score"]):.5f} \u00B1 {numpy.std(results["f1_score"]):.5f}'
+	bsc = f'{numpy.mean(results["brier_score"]):.5f} \u00B1 {numpy.std(results["brier_score"]):.5f}'
+
+	return [acc, pre, rec, f1s, bsc]

@@ -1,6 +1,4 @@
 from torch.utils.data import DataLoader
-from torch.utils.data import RandomSampler
-from torch.utils.data import TensorDataset
 from transformers import BertForSequenceClassification
 from transformers import AdamW
 from pandas import DataFrame
@@ -94,13 +92,13 @@ def bert_predict (model : Any, dataloader : DataLoader, models : dict) -> (Any, 
 
 	return model, ytrue, ypred, yprob
 
-def bert_method (dataset : DataFrame, save_model : bool = True, epochs : int = 1) -> dict :
+def bert_defsplit (dataset : DataFrame, save_model : bool = True, epochs : int = 1) -> dict :
 	# Create device
 	device = torch.device('cpu')
 
 	# Split training and testing set
 	xtrain, xtest, ytrain, ytest = train_test_split(dataset.index.values, dataset.target.values,
-		test_size = 0.15,
+		train_size = 0.67,
 		random_state = None,
 		stratify = dataset.target.values
 	)
@@ -109,23 +107,9 @@ def bert_method (dataset : DataFrame, save_model : bool = True, epochs : int = 1
 	dataset.loc[xtrain, 'type'] = 'train'
 	dataset.loc[xtest, 'type'] = 'test'
 
-	# Create train tensors and data loader
-	input_ids, attention_masks, labels = bert_features(dataset = dataset[dataset['type'] == 'train'])
-	data_train = TensorDataset(input_ids, attention_masks, labels)
-	dataloader_train = DataLoader(
-		dataset = data_train,
-		sampler = RandomSampler(data_train),
-		batch_size = 128
-	)
-
-	# Create test tensors and data loader
-	input_ids, attention_masks, labels = bert_features(dataset = dataset[dataset['type'] == 'test'])
-	data_test = TensorDataset(input_ids, attention_masks, labels)
-	dataloader_test = DataLoader(
-		dataset = data_test,
-		sampler = RandomSampler(data_test),
-		batch_size = 128
-	)
+	# Create train and test data loader
+	dataloader_train = bert_features(dataset = dataset[dataset['type'] == 'train'])
+	dataloader_test = bert_features(dataset = dataset[dataset['type'] == 'test'])
 
 	# Create model
 	model = create_bert(num_labels = len(dataset['target'].unique()))

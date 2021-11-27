@@ -102,12 +102,15 @@ def main (logger : Logger) -> None :
 	pos_words, neg_words = sentimental_words(dataset = dataset, column = 'tokens', target = 'target', top = 100)
 
 	logger.debug('Positive words : ' + str(pos_words))
-	logger.debug('Negative words : ' + str(neg_words))
+	logger.debug('Negative words : ' + str(neg_words) + '\n')
 
 	main_classification(dataset = dataset, pos_words = pos_words, neg_words = neg_words, logger = logger)
 
 if __name__ == '__main__' :
 	file_logger = create_logger(level = logging.DEBUG, filename = 'output.log')
+
+	logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
+	logging.getLogger("matplotlib.font_manager").setLevel(logging.WARNING)
 
 	download_resources(logger = file_logger)
 	main(logger = file_logger)
