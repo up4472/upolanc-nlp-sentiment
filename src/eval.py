@@ -1,0 +1,30 @@
+from sklearn.preprocessing import LabelBinarizer
+
+from sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+
+import numpy
+
+def evaluate_classification (ytrue : numpy.ndarray, ypred : numpy.ndarray, yprob : numpy.ndarray = None) -> dict :
+	_accuracy = accuracy_score(y_true = ytrue, y_pred = ypred)
+	_confusion = confusion_matrix(y_true = ytrue, y_pred = ypred)
+	_metrics = precision_recall_fscore_support(y_true = ytrue, y_pred = ypred, average = 'weighted', zero_division = 0)
+	_brier = numpy.nan
+
+	_precision = _metrics[0]
+	_recall = _metrics[1]
+	_f1score = _metrics[2]
+
+	if yprob is not None :
+		lb = LabelBinarizer()
+
+		_brier = numpy.sum(numpy.square(numpy.subtract(lb.fit_transform(ytrue), yprob))) / len(ytrue)
+
+	return {
+		'accuracy_score' : _accuracy,
+		'precision' : _precision,
+		'recall' : _recall,
+		'f1_score' : _f1score,
+		'brier_score' : _brier
+	}

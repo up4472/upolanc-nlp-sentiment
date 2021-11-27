@@ -13,10 +13,13 @@ from src.dataset import sentimental_words
 from src.dataset import stem_tokens
 from src.dataset import tokenize_text
 
+import warnings
 import logging
 import pandas
 import string
 import nltk
+
+warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 pandas.set_option('display.max_rows', 1000)
 pandas.set_option('display.max_columns', 1000)
@@ -54,8 +57,6 @@ def main (logger : Logger) -> None :
 	dataset = dataset[config['columns']]
 	dataset = dataset.rename(columns = {'airline_sentiment' : 'target'})
 
-	dataset['tokens'] = dataset['text']
-
 	logger.info('Checking for any missing values in the dataset...\n')
 	logger.debug('Missing values:\n' + str(dataset.isnull().sum()) + '\n')
 	logger.debug('Dataset header:\n' + str(dataset.head()) + '\n')
@@ -67,6 +68,8 @@ def main (logger : Logger) -> None :
 	distribution['frequency'] = distribution['count'] / distribution['count'].sum()
 
 	logger.debug('Sentiment distribution:\n' + str(distribution) + '\n')
+
+	dataset['tokens'] = dataset['text'].copy()
 
 	logger.info('Cleaning dataset text...')
 	dataset = clean_text(dataset = dataset, column = 'tokens', stopwords = en_stopwords, punct = en_punct)
@@ -93,7 +96,7 @@ def main (logger : Logger) -> None :
 	main_classification(dataset = dataset, pos_words = pos_words, neg_words = neg_words, logger = logger)
 
 if __name__ == '__main__' :
-	file_logger = create_logger(filename = 'output.log', level = logging.DEBUG)
+	file_logger = create_logger(level = logging.DEBUG, filename = 'output.log')
 
 	download_resources(logger = file_logger)
 	main(logger = file_logger)

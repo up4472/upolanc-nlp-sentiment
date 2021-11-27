@@ -6,7 +6,8 @@ from src.dataset import encode_target
 from src.feature import vader_features
 from src.feature import vader_features_ext
 from src.models import evaluate_classification
-from src.models import train_classification
+from src.models import models_method
+from src.bert import bert_method
 
 import numpy
 
@@ -66,7 +67,7 @@ def __class_vader (dataset : DataFrame, logger : Logger) -> None :
 def __class_vader_ml (dataset : DataFrame, model_name : str, logger : Logger) -> None :
 	xdata, ydata = vader_features(dataset = dataset)
 
-	results = train_classification(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
+	results = models_method(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
 
 	__report(
 		name = f'Vader Features [{model_name}]',
@@ -77,10 +78,34 @@ def __class_vader_ml (dataset : DataFrame, model_name : str, logger : Logger) ->
 def __class_vader_ml_ext (dataset : DataFrame, model_name : str, logger : Logger) -> None :
 	xdata, ydata = vader_features_ext(dataset = dataset)
 
-	results = train_classification(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
+	results = models_method(xdata = xdata, ydata = ydata, model_name = model_name, k_fold = 10)
 
 	__report(
 		name = f'Vader Features Ext [{model_name}]',
+		results = results,
+		logger = logger
+	)
+
+def __class_bert (dataset : DataFrame, epochs : int, logger : Logger) -> None :
+	results = bert_method(dataset = dataset, epochs = epochs, save_model = True)
+
+	name = f'BERT model [epochs = {epochs}]'
+
+	neg_mean = numpy.mean(results['accuracy_per_class'][0])
+	neg_std = numpy.std(results['accuracy_per_class'][0])
+
+	neu_mean = numpy.mean(results['accuracy_per_class'][1])
+	neu_std = numpy.std(results['accuracy_per_class'][1])
+
+	pos_mean = numpy.mean(results['accuracy_per_class'][2])
+	pos_std = numpy.std(results['accuracy_per_class'][2])
+
+	logger.info(f'[{name:24}] Accuracy [0]: {neg_mean:.5f} \u00B1 {neg_std:.5f}')
+	logger.info(f'[{name:24}] Accuracy [1]: {neu_mean:.5f} \u00B1 {neu_std:.5f}')
+	logger.info(f'[{name:24}] Accuracy [2]: {pos_mean:.5f} \u00B1 {pos_std:.5f}')
+
+	__report(
+		name = name,
 		results = results,
 		logger = logger
 	)
@@ -90,7 +115,7 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	dataset, encoder = encode_target(dataset = dataset, target = 'target', column = 'vader_prediction')
 
 	logger.info('Calculating number of positive and negative words....\n')
-	dataset = compute_pos_neg(dataset = dataset, column = 'text', pos_words = pos_words, neg_words = neg_words)
+	dataset = compute_pos_neg(dataset = dataset, column = 'tokens', pos_words = pos_words, neg_words = neg_words)
 
 	logger.info('Adding a constant to all columns that have negative values....\n')
 	dataset['vader_compound'] = dataset['vader_compound'].apply(lambda x : 1 + x)
@@ -100,7 +125,7 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	# MAJORITY VOTING
 	__class_majority(dataset = dataset, logger = logger)
 
-	# VADER
+	# VADER + MACHINE LEARNING
 	__class_vader(dataset = dataset, logger = logger)
 
 	for name in ['MNB', 'GNB', 'DT', 'KNN', 'RF', 'MV'] :
@@ -108,4 +133,5 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 		__class_vader_ml_ext(dataset = dataset, model_name = name, logger = logger)
 
 	# BERT
-	...
+	for epochs in [1] :
+		__class_bert(dataset = dataset, epochs = epochs, logger = logger)

@@ -1,22 +1,21 @@
+from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import VotingClassifier
 from sklearn.ensemble import VotingRegressor
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import precision_recall_fscore_support
-from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import StratifiedKFold
-from sklearn.naive_bayes import GaussianNB
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.preprocessing import LabelBinarizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import DecisionTreeRegressor
+from typing import Any
+
+from src.eval import evaluate_classification
 
 import numpy
 
-def create_classification (name : str) :
+def create_classification (name : str) -> Any :
 	return {
 		'MNB' : MultinomialNB(),
 		'GNB' : GaussianNB(),
@@ -27,10 +26,10 @@ def create_classification (name : str) :
 			('KNN', KNeighborsClassifier()),
 			('DT', DecisionTreeClassifier()),
 			('RF', RandomForestClassifier())
-		])
+		], voting = 'soft')
 	}[name]
 
-def create_regression (name : str) :
+def create_regression (name : str) -> Any :
 	return {
 		'KNN' : KNeighborsRegressor(),
 		'DT' : DecisionTreeRegressor(),
@@ -42,7 +41,18 @@ def create_regression (name : str) :
 		])
 	}[name]
 
-def train_classification (xdata : numpy.ndarray, ydata : numpy.array, model_name : str, k_fold : int = 5) -> dict :
+def model_train (model : Any, xdata : numpy.ndarray, ydata : numpy.array) -> Any :
+	model.fit(xdata, ydata)
+
+	return model
+
+def model_predict (model : Any, xdata : numpy.ndarray, ydata : numpy.array) ->  (numpy.ndarray, numpy.ndarray, numpy.ndarray):
+	ypred = model.predict(xdata)
+	yprob = model.predict_proba(xdata)
+
+	return ydata, ypred, yprob
+
+def models_method (xdata : numpy.ndarray, ydata : numpy.array, model_name : str, k_fold : int = 5) -> dict :
 	# Create model
 	model = create_classification(name = model_name)
 
@@ -62,18 +72,13 @@ def train_classification (xdata : numpy.ndarray, ydata : numpy.array, model_name
 		ytrain, ytest = ydata[train_index], ydata[test_index]
 
 		# Train the model
-		model.fit(xtrain, ytrain)
+		model = model_train(model = model, xdata = xtrain, ydata = ytrain)
 
 		# Predict the model
-		ypred = model.predict(xtest)
-
-		if model_name in ['MV'] :
-			yprob = None
-		else :
-			yprob = model.predict_proba(xtest)
+		ytrue, ypred, yprob = model_predict(model = model, xdata = xtest, ydata = ytest)
 
 		# Evaluate the model
-		result = evaluate_classification(ytrue = ytest, ypred = ypred, yprob = yprob)
+		result = evaluate_classification(ytrue = ytrue, ypred = ypred, yprob = yprob)
 
 		# Save the results
 		accuracy.append(result['accuracy_score'])
@@ -88,27 +93,4 @@ def train_classification (xdata : numpy.ndarray, ydata : numpy.array, model_name
 		'recall' : recall,
 		'f1_score' : f1score,
 		'brier_score' : brier
-	}
-
-def evaluate_classification (ytrue : numpy.ndarray, ypred : numpy.ndarray, yprob : numpy.ndarray = None) -> dict :
-	_accuracy = accuracy_score(y_true = ytrue, y_pred = ypred)
-	_confusion = confusion_matrix(y_true = ytrue, y_pred = ypred)
-	_metrics = precision_recall_fscore_support(y_true = ytrue, y_pred = ypred, average = 'weighted', zero_division = 0)
-	_brier = numpy.nan
-
-	_precision = _metrics[0]
-	_recall = _metrics[1]
-	_f1score = _metrics[2]
-
-	if yprob is not None :
-		lb = LabelBinarizer()
-
-		_brier = numpy.sum(numpy.square(numpy.subtract(lb.fit_transform(ytrue), yprob))) / len(ytrue)
-
-	return {
-		'accuracy_score' : _accuracy,
-		'precision' : _precision,
-		'recall' : _recall,
-		'f1_score' : _f1score,
-		'brier_score' : _brier
 	}
