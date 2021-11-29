@@ -214,7 +214,7 @@ def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : b
 
 		history['train_loss'].append(loss)
 
-		history['train_accuracy'].append(result['accuracy'])
+		history['train_accuracy'].append(result['accuracy_score'])
 		history['train_precision'].append(result['precision'])
 		history['train_recall'].append(result['recall'])
 		history['train_f1_score'].append(result['f1_score'])
@@ -229,15 +229,15 @@ def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : b
 		# Save the results
 		history['test_loss'].append(loss)
 
-		history['test_accuracy'].append(result['accuracy'])
+		history['test_accuracy'].append(result['accuracy_score'])
 		history['test_precision'].append(result['precision'])
 		history['test_recall'].append(result['recall'])
 		history['test_f1_score'].append(result['f1_score'])
 		history['test_brier_score'].append(result['brier_score'])
 
-		if save_model and result['accuracy'] > best_acc :
+		if save_model and result['accuracy_score'] > best_acc :
 			torch.save(model.state_dict(), f'out\\bert_{name}_model.dat')
-			best_acc = result['accuracy']
+			best_acc = result['accuracy_score']
 
 	pyplot.figure(1)
 	pyplot.plot(history['train_accuracy'], label = 'Train')

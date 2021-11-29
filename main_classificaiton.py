@@ -27,7 +27,7 @@ def __majority (dataset : DataFrame, report : list, names : list) :
 	)
 
 	report.append(classification_to_list(results = results))
-	names.append('Majority')
+	names.append('Majority Classifier')
 
 def __vader_v0 (dataset : DataFrame, report : list, names : list) -> None :
 	results = evaluate_classification(
@@ -36,7 +36,7 @@ def __vader_v0 (dataset : DataFrame, report : list, names : list) -> None :
 	)
 
 	report.append(classification_to_list(results = results))
-	names.append('VADER Rule-Based')
+	names.append('Rule-Based [VADER Features]')
 
 def __vader_v1 (dataset : DataFrame, name : str, report : list, names : list) -> None :
 	xdata, ydata = vader_features(dataset = dataset)
@@ -44,7 +44,7 @@ def __vader_v1 (dataset : DataFrame, name : str, report : list, names : list) ->
 	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = 10)
 
 	report.append(classification_to_list(results = results))
-	names.append(f'VADER Features [{name}]')
+	names.append(f'{name} [VADER Features]')
 
 def __vader_v2 (dataset : DataFrame, name : str, report : list, names : list) -> None :
 	xdata, ydata = vader_features_ext(dataset = dataset)
@@ -52,9 +52,11 @@ def __vader_v2 (dataset : DataFrame, name : str, report : list, names : list) ->
 	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = 10)
 
 	report.append(classification_to_list(results = results))
-	names.append(f'VADER + Custom Feartures [{name}]')
+	names.append(f'{name} [VADER + Custom Feartures]')
 
 def __bert (dataset : DataFrame, epochs : int, report : list, names : list) -> None :
+	dataset = dataset[['target', 'text']]
+
 	results = bert_defsplit(dataset = dataset, epochs = epochs, name = 'sentiment', save_model = True)
 
 	def get_ending (value : int) -> str :
@@ -65,7 +67,7 @@ def __bert (dataset : DataFrame, epochs : int, report : list, names : list) -> N
 
 	for index, result in enumerate(classification_to_list_foreach(results = results, epochs = epochs)) :
 		report.append(result)
-		names.append(f'BERT-sent [{index + 1}-{get_ending(index + 1)} epoch]')
+		names.append(f'BERT-sentiment [{index + 1}-{get_ending(index + 1)} epoch]')
 
 def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, logger : Logger) -> None :
 	logger.info('Creating classification target...')
@@ -100,7 +102,7 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 
 	# BERT
 	print('Running BERTs')
-	__bert(dataset = dataset[['target', 'text']], epochs = 2, report = reports, names = names)
+	__bert(dataset = dataset, epochs = 1, report = reports, names = names)
 
 	# PREPARE FINAL REPORT DATAFRAME
 	report = DataFrame(reports, columns = columns, index = names)

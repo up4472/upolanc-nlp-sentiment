@@ -1,17 +1,17 @@
-2021-11-29 11:57:08,993 - root : INFO : Downloading [stopwords] from [nltk]...
-2021-11-29 11:57:09,041 - root : INFO : Downloading [names] from [nltk]...
-2021-11-29 11:57:09,042 - root : INFO : Downloading [wordnet] from [nltk]...
-2021-11-29 11:57:09,057 - root : INFO : Downloading [vader_lexicon] from [nltk]...
+2021-11-29 15:11:06,586 - root : INFO : Downloading [stopwords] from [nltk]...
+2021-11-29 15:11:06,643 - root : INFO : Downloading [names] from [nltk]...
+2021-11-29 15:11:06,643 - root : INFO : Downloading [wordnet] from [nltk]...
+2021-11-29 15:11:06,660 - root : INFO : Downloading [vader_lexicon] from [nltk]...
 
-2021-11-29 11:57:09,058 - root : INFO : Loading dataset and configuration files...
-2021-11-29 11:57:09,104 - root : INFO : Checking for any missing values in the dataset...
+2021-11-29 15:11:06,661 - root : INFO : Loading dataset and configuration files...
+2021-11-29 15:11:06,712 - root : INFO : Checking for any missing values in the dataset...
 
-2021-11-29 11:57:09,106 - root : DEBUG : Missing values:
+2021-11-29 15:11:06,714 - root : DEBUG : Missing values:
 target    0
 text      0
 dtype: int64
 
-2021-11-29 11:57:09,107 - root : DEBUG : Dataset header:
+2021-11-29 15:11:06,715 - root : DEBUG : Dataset header:
      target                                               text
 0   neutral                @VirginAmerica What @dhepburn said.
 1  positive  @VirginAmerica plus you've added commercials t...
@@ -19,10 +19,55 @@ dtype: int64
 3  negative  @VirginAmerica it's really aggressive to blast...
 4  negative  @VirginAmerica and it's a really big bad thing...
 
-2021-11-29 11:57:09,110 - root : DEBUG : Sentiment distribution:
+2021-11-29 15:11:06,718 - root : DEBUG : Sentiment distribution:
           count  frequency
 negative   9178   0.626913
 neutral    3099   0.211680
 positive   2363   0.161407
 
-2021-11-29 11:57:09,225 - root : INFO : Cleaning dataset text...
+2021-11-29 15:11:06,842 - root : INFO : Cleaning dataset text...
+2021-11-29 15:11:16,254 - root : INFO : Calculating polarity scores...
+2021-11-29 15:11:21,156 - root : INFO : Tokenizing dataset text...
+2021-11-29 15:11:21,190 - root : INFO : Lemmatizing dataset text...
+
+2021-11-29 15:11:22,515 - root : DEBUG : Dataset header:
+     target                                               text                                             tokens  word_count  vader_compound  vader_positive  vader_negative  vader_neutral vader_prediction
+0   neutral                                         What said.                                             [said]           1          0.0000           0.000           0.000          1.000          neutral
+1  positive  plus you've added commercials to the experienc...       [plus, added, commercial, experience, tacky]           5          0.0000           0.000           0.000          1.000          neutral
+2   neutral  I didn't today... Must mean I need to take ano...           [today, must, mean, need, take, another]           6          0.0000           0.000           0.000          1.000          neutral
+3  negative  it's really aggressive to blast obnoxious "ent...  [really, aggressive, blast, obnoxious, enterta...          10         -0.3306           0.187           0.345          0.468         negative
+4  negative           and it's a really big bad thing about it                          [really, big, bad, thing]           4         -0.5829           0.000           0.557          0.443         negative
+
+2021-11-29 15:11:23,584 - root : DEBUG : Positive words : {'mountain', 'phenomenal', 'chs', 'fab', 'entertaining', 'woohoo', 'cellphone', 'product', 'base', 'xoxo', 'reminder', 'represents', 'smooth', 'aww', 'chief', 'beauty', 'beautifully', 'shoutout', 'star', 'smoothest', 'sweetheart', 'application', 'hug', 'cali', 'appreciation', 'allergy', 'nicest', 'slowing', 'rn', 'clarifying', 'lo', 'boise', 'informative', 'wc', 'rocked', 'cockpit', 'pleasure', 'averted', 'painless', 'squared', 'chocolate', 'oui', 'engaging', 'accomplished', 'concert', 'killed', 'gosh', 'ooh', 'friendliest', 'attentiveness', 'happier', 'dbcvepnqc', 'refreshing', 'cb', 'exceptional', 'spelling', 'smile', 'relaxing', 'caribbean', 'eliz', 'delighted', 'pleasantly', 'delight', 'hero', 'greatest', 'bluemanity', 'yummy', 'grateful', 'goodness', 'crewmembers', 'fella', 'gfc', 'recovery', 'energy', 'fo', 'cream', 'livery', 'awesomeness', 'anchorage', 'celebrating', 'cessna', 'medal', 'removal', 'graphic', 'mark', 'affordable', 'recognition', 'comfortable', 'personalized', 'utah', 'relief', 'rollercoaster', 'm', 'mn', 'stair', 'cheese', 'dancing', 'impress', 'amazingly', 'frontrunner'}
+2021-11-29 15:11:23,585 - root : DEBUG : Negative words : {'wtf', 'failure', 'changing', 'third', 'resolve', 'excuse', 'auto', 'broke', 'forced', 'training', 'refuse', 'actual', 'lose', 'ruining', 'impossible', 'suitcase', 'bother', 'door', 'lie', 'pull', 'plenty', 'useless', 'upset', 'bin', 'taxi', 'disappointed', 'usairways', 'manager', 'confirm', 'partner', 'wasted', 'screw', 'hung', 'slow', 'failed', 'notice', 'receive', 'except', 'ridiculous', 'attitude', 'unhappy', 'diff', 'happening', 'acceptable', 'cause', 'volume', 'dont', 'funeral', 'dividend', 'closed', 'fuck', 'rate', 'damaged', 'paid', 'allowed', 'worse', 'compensate', 'fuel', 'messed', 'personal', 'automated', 'alone', 'clue', 'disconnected', 'anymore', 'text', 'charged', 'fail', 'unhelpful', 'promised', 'loaded', 'hire', 'nightmare', 'compensation', 'turn', 'jetway', 'equipment', 'rude', 'caused', 'mobile', 'merger', 'lack', 'trouble', 'ruined', 'clothes', 'disappointing', 'error', 'switched', 'courtesy', 'callback', 'disconnect', 'worst', 'nobody', 'pathetic', 'character', 'rd', 'allow', 'unacceptable', 'incompetence', 'mon'}
+
+2021-11-29 15:11:23,585 - root : INFO : Creating classification target...
+2021-11-29 15:11:23,589 - root : INFO : Calculating number of positive and negative words....
+
+2021-11-29 15:11:23,611 - root : INFO : Adding a constant to all columns that have negative values....
+
+2021-11-29 15:11:23,616 - root : DEBUG : Dataset header:
+   target                                               text                                             tokens  word_count  vader_compound  vader_positive  vader_negative  vader_neutral  vader_prediction  pos_count  neg_count
+0       1                                         What said.                                             [said]           1          1.0000           0.000           0.000          1.000                 1          0          0
+1       2  plus you've added commercials to the experienc...       [plus, added, commercial, experience, tacky]           5          1.0000           0.000           0.000          1.000                 1          0          0
+2       1  I didn't today... Must mean I need to take ano...           [today, must, mean, need, take, another]           6          1.0000           0.000           0.000          1.000                 1          0          0
+3       0  it's really aggressive to blast obnoxious "ent...  [really, aggressive, blast, obnoxious, enterta...          10          0.6694           0.187           0.345          0.468                 0          0          0
+4       0           and it's a really big bad thing about it                          [really, big, bad, thing]           4          0.4171           0.000           0.557          0.443                 0          0          0
+
+2021-11-29 16:48:17,696 - root : INFO : Final report :
+                                         accuracy          precision             recall           f1_score        brier_score
+Majority Classifier             0.62691 ± 0.00000  0.39302 ± 0.00000  0.62691 ± 0.00000  0.48315 ± 0.00000  1.98846 ± 0.00000
+Rule-Based [VADER Features]     0.49857 ± 0.00000  0.68675 ± 0.00000  0.49857 ± 0.00000  0.51998 ± 0.00000          nan ± nan
+MNB [VADER Features]            0.63135 ± 0.00159  0.52328 ± 0.02532  0.63135 ± 0.00159  0.49336 ± 0.00326  0.47832 ± 0.00362
+MNB [VADER + Custom Feartures]  0.68299 ± 0.00617  0.58382 ± 0.08438  0.68299 ± 0.00617  0.58701 ± 0.00724  0.41880 ± 0.00518
+GNB [VADER Features]            0.65669 ± 0.00944  0.61473 ± 0.03661  0.65669 ± 0.00944  0.58975 ± 0.00609  0.49138 ± 0.01647
+GNB [VADER + Custom Feartures]  0.67268 ± 0.00794  0.58462 ± 0.08423  0.67268 ± 0.00794  0.59873 ± 0.00669  0.57652 ± 0.01463
+DT [VADER Features]             0.64802 ± 0.01596  0.59061 ± 0.01847  0.64802 ± 0.01596  0.60403 ± 0.01515  0.53557 ± 0.02664
+DT [VADER + Custom Feartures]   0.66824 ± 0.01893  0.65253 ± 0.02314  0.66824 ± 0.01893  0.65800 ± 0.02100  0.52384 ± 0.02504
+KNN [VADER Features]            0.62903 ± 0.01705  0.65654 ± 0.01769  0.62903 ± 0.01705  0.63338 ± 0.01180  0.53500 ± 0.03948
+KNN [VADER + Custom Feartures]  0.67377 ± 0.01579  0.65877 ± 0.01560  0.67377 ± 0.01579  0.66176 ± 0.01407  0.46661 ± 0.01634
+RF [VADER Features]             0.66469 ± 0.01390  0.60764 ± 0.01759  0.66469 ± 0.01390  0.61677 ± 0.01316  0.45772 ± 0.01657
+RF [VADER + Custom Feartures]   0.69419 ± 0.01326  0.67375 ± 0.01697  0.69419 ± 0.01326  0.67991 ± 0.01551  0.42506 ± 0.01478
+MV [VADER Features]             0.64740 ± 0.02829  0.62109 ± 0.02635  0.64740 ± 0.02829  0.61939 ± 0.01264  0.46876 ± 0.01629
+MV [VADER + Custom Feartures]   0.68286 ± 0.01864  0.66991 ± 0.02280  0.68286 ± 0.01864  0.67456 ± 0.02068  0.43554 ± 0.01537
+BERT-sentiment [1-st epoch]     0.83050 ± 0.00000  0.82642 ± 0.00000  0.83050 ± 0.00000  0.82713 ± 0.00000  0.24494 ± 0.00000
