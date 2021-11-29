@@ -85,8 +85,8 @@ def compute_polarity (dataset : DataFrame, column : str) -> DataFrame :
 
 	# Define private method
 	def vader_predict (score: float) -> str :
-		if score < 0 : return 'negative'
-		if score > 0 : return 'positive'
+		if score <= -0.05 : return 'negative'
+		if score >= +0.05 : return 'positive'
 		return 'neutral'
 
 	# Add VADER polarity scores

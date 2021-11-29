@@ -4,9 +4,10 @@ from logging import Logger
 from src.dataset import compute_pos_neg
 from src.dataset import encode_target
 from src.eval import classification_to_list
+from src.eval import classification_to_list_foreach
+from src.eval import evaluate_classification
 from src.feature import vader_features
 from src.feature import vader_features_ext
-from src.models import evaluate_classification
 from src.models import models_kfold
 from src.bert import bert_defsplit
 
@@ -26,7 +27,7 @@ def __majority (dataset : DataFrame, report : list, names : list) :
 	)
 
 	report.append(classification_to_list(results = results))
-	names.append('Majority Classifier')
+	names.append('Majority')
 
 def __vader_v0 (dataset : DataFrame, report : list, names : list) -> None :
 	results = evaluate_classification(
@@ -35,7 +36,7 @@ def __vader_v0 (dataset : DataFrame, report : list, names : list) -> None :
 	)
 
 	report.append(classification_to_list(results = results))
-	names.append('VADER Classifier (Argmax)')
+	names.append('VADER Rule-Based')
 
 def __vader_v1 (dataset : DataFrame, name : str, report : list, names : list) -> None :
 	xdata, ydata = vader_features(dataset = dataset)
@@ -43,7 +44,7 @@ def __vader_v1 (dataset : DataFrame, name : str, report : list, names : list) ->
 	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = 10)
 
 	report.append(classification_to_list(results = results))
-	names.append(f'VADER As Feature ({name})')
+	names.append(f'VADER Features [{name}]')
 
 def __vader_v2 (dataset : DataFrame, name : str, report : list, names : list) -> None :
 	xdata, ydata = vader_features_ext(dataset = dataset)
@@ -51,28 +52,20 @@ def __vader_v2 (dataset : DataFrame, name : str, report : list, names : list) ->
 	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = 10)
 
 	report.append(classification_to_list(results = results))
-	names.append(f'VADER As Feature + Custom ({name})')
+	names.append(f'VADER + Custom Feartures [{name}]')
 
-def __bert_v0 (dataset : DataFrame, epochs : int, report : list, names : list, logger : Logger) -> None :
-	results = bert_defsplit(dataset = dataset, epochs = epochs, save_model = True)
+def __bert (dataset : DataFrame, epochs : int, report : list, names : list) -> None :
+	results = bert_defsplit(dataset = dataset, epochs = epochs, name = 'sentiment', save_model = True)
 
-	name = f'BERT ({epochs} epochs)'
+	def get_ending (value : int) -> str :
+		if value == 1 : return 'st'
+		if value == 2 : return 'nd'
+		if value == 3 : return 'rd'
+		return 'th'
 
-	neg_mean = numpy.mean(results['accuracy_per_class'][0])
-	neg_std = numpy.std(results['accuracy_per_class'][0])
-
-	neu_mean = numpy.mean(results['accuracy_per_class'][1])
-	neu_std = numpy.std(results['accuracy_per_class'][1])
-
-	pos_mean = numpy.mean(results['accuracy_per_class'][2])
-	pos_std = numpy.std(results['accuracy_per_class'][2])
-
-	logger.info(f'[{name:16}] Accuracy [0]: {neg_mean:.5f} \u00B1 {neg_std:.5f}')
-	logger.info(f'[{name:16}] Accuracy [1]: {neu_mean:.5f} \u00B1 {neu_std:.5f}')
-	logger.info(f'[{name:16}] Accuracy [2]: {pos_mean:.5f} \u00B1 {pos_std:.5f}\n')
-
-	report.append(classification_to_list(results = results))
-	names.append(name)
+	for index, result in enumerate(classification_to_list_foreach(results = results, epochs = epochs)) :
+		report.append(result)
+		names.append(f'BERT-sent [{index + 1}-{get_ending(index + 1)} epoch]')
 
 def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, logger : Logger) -> None :
 	logger.info('Creating classification target...')
@@ -92,9 +85,13 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	names = list()
 
 	# MAJORITY VOTING
+	print('Running Majority')
+
 	__majority(dataset = dataset, report = reports, names = names)
 
 	# VADER + MACHINE LEARNING
+	print('Running VADERs')
+
 	__vader_v0(dataset = dataset, report = reports, names = names)
 
 	for name in ['MNB', 'GNB', 'DT', 'KNN', 'RF', 'MV'] :
@@ -102,8 +99,8 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 		__vader_v2(dataset = dataset, name = name, report = reports, names = names)
 
 	# BERT
-	for epochs in [1] :
-		__bert_v0(dataset = dataset, epochs = epochs, report = reports, names = names, logger = logger)
+	print('Running BERTs')
+	__bert(dataset = dataset[['target', 'text']], epochs = 2, report = reports, names = names)
 
 	# PREPARE FINAL REPORT DATAFRAME
 	report = DataFrame(reports, columns = columns, index = names)

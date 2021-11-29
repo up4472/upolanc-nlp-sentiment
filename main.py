@@ -4,14 +4,14 @@ from logging import Formatter
 from logging import Logger
 
 from main_classificaiton import main_classification
+
 from src.dataset import compute_polarity
-from src.dataset import lemmatize_tokens
-from src.dataset import load_csv
-from src.dataset import load_json
-from src.dataset import clean_text
-from src.dataset import sentimental_words
-from src.dataset import stem_tokens
-from src.dataset import tokenize_text
+from src.dataset  import lemmatize_tokens
+from src.dataset  import load_csv
+from src.dataset  import load_json
+from src.dataset  import clean_text
+from src.dataset  import sentimental_words
+from src.dataset  import tokenize_text
 
 from matplotlib import pyplot
 
@@ -91,8 +91,8 @@ def main (logger : Logger) -> None :
 	logger.info('Tokenizing dataset text...')
 	dataset = tokenize_text(dataset = dataset, column = 'tokens')
 
-	logger.info('Stemming dataset text...')
-	dataset = stem_tokens(dataset = dataset, column = 'tokens')
+	# logger.info('Stemming dataset text...')
+	# dataset = stem_tokens(dataset = dataset, column = 'tokens')
 
 	logger.info('Lemmatizing dataset text...\n')
 	dataset = lemmatize_tokens(dataset = dataset, column = 'tokens')
@@ -111,6 +111,7 @@ if __name__ == '__main__' :
 
 	logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 	logging.getLogger("matplotlib.font_manager").setLevel(logging.WARNING)
+	logging.getLogger("filelock").setLevel(logging.WARNING)
 
 	download_resources(logger = file_logger)
 	main(logger = file_logger)

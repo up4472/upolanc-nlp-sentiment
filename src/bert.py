@@ -1,5 +1,7 @@
+from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from transformers import BertForSequenceClassification
+from transformers import BertTokenizer
 from transformers import AdamW
 from pandas import DataFrame
 from typing import Any
@@ -7,115 +9,179 @@ from typing import Any
 from transformers import get_linear_schedule_with_warmup
 from sklearn.model_selection import train_test_split
 from torch.nn.utils import clip_grad_norm_
+from collections import defaultdict
+from matplotlib import pyplot
 from tqdm import tqdm
 
+from src.classes import BertForSentimentClassification
+from src.classes import CustomDataset
 from src.eval import evaluate_classification
-from src.feature import bert_features
 
 import torch
 import numpy
 
-def create_bert (num_labels : int) -> BertForSequenceClassification :
-	return BertForSequenceClassification.from_pretrained('bert-base-uncased',
-		num_labels = num_labels,
-		output_attentions = False,
-		output_hidden_states = False
+BATCH_SIZE = 128
+RANDOM_SEED = 17
+MAX_LEN = 100
+
+def create_bert (name : str, num_labels : int) -> Any :
+	return {
+		'sentiment' :
+			BertForSentimentClassification(n_classes = num_labels),
+		'sequance' :
+			# Will not work since different objects during training and predicting
+			BertForSequenceClassification.from_pretrained('bert-base-uncased',
+				num_labels = num_labels,
+				output_attentions = False,
+				output_hidden_states = False
+		)
+	}[name.lower()]
+
+def create_dataloader (dataset : DataFrame, tokenizer, max_len : int, batch_size : int) -> DataLoader :
+	dataset = CustomDataset(
+		text = dataset.text.to_numpy(),
+		targets = dataset.target.to_numpy(),
+		tokenizer = tokenizer,
+		max_len = max_len
 	)
 
-def bert_train (model : Any, dataloader : DataLoader, models : dict) -> Any :
+	return DataLoader(
+		dataset = dataset,
+		batch_size = batch_size,
+		num_workers = 4
+	)
+
+def bert_train (model : Any, dataloader : DataLoader, models : dict) :
 	optimizer = models['optimizer']
 	scheduler = models['scheduler']
 	device = models['device']
+	loss_fn = models['loss_fn']
 
 	# Set model to training mode
 	model.train()
 
-	loss_total = 0
+	losses = []
+	ytrue = []
+	ypred = []
+	yprob = []
 
 	for batch in tqdm(dataloader) :
-		model.zero_grad()
+		input_ids = batch['input_ids'].to(device)
+		attention_mask = batch['attention_mask'].to(device)
+		targets = batch['targets'].to(device)
 
-		batch = tuple(item.to(device) for item in batch)
+		outputs = model(
+			input_ids = input_ids,
+			attention_mask = attention_mask
+		)
 
-		inputs = {
-			'input_ids' : batch[0],
-			'attention_mask' : batch[1],
-			'labels' : batch[2]
-		}
+		_, pred = torch.max(outputs, dim = 1)
+		prob = torch.softmax(outputs, dim = 1)
 
-		outputs = model(**inputs)
+		lossval = loss_fn(outputs, targets)
 
-		loss = outputs[0]
+		losses.append(lossval.item())
 
-		loss_total = loss_total + loss.item()
-
-		clip_grad_norm_(model.parameters(), 1.0)
+		lossval.backward()
+		clip_grad_norm_(model.parameters(), max_norm = 1.0)
 
 		optimizer.step()
 		scheduler.step()
+		optimizer.zero_grad()
 
-	return model
+		ytrue.append(targets.numpy())
+		ypred.append(pred.numpy())
+		yprob.append(prob.detach().numpy())
 
-def bert_predict (model : Any, dataloader : DataLoader, models : dict) -> (Any, numpy.ndarray, numpy.ndarray) :
+	ytrue = numpy.concatenate(ytrue, axis = 0)
+	ypred = numpy.concatenate(ypred, axis = 0)
+	yprob = numpy.concatenate(yprob, axis = 0)
+
+	loss = numpy.mean(losses)
+
+	return model, ytrue, ypred, yprob, loss
+
+def bert_predict (model : Any, dataloader : DataLoader, models : dict) :
 	device = models['device']
+	loss_fn = models['loss_fn']
 
 	# Set model to evaluation mode
 	model.eval()
 
-	loss_total = 0
-	yprob = []
+	losses = []
 	ytrue = []
+	ypred = []
+	yprob = []
 
-	for batch in tqdm(dataloader) :
-		batch = tuple(item.to(device) for item in batch)
+	with torch.no_grad() :
+		for batch in tqdm(dataloader) :
+			input_ids = batch['input_ids'].to(device)
+			attention_mask = batch['attention_mask'].to(device)
+			targets = batch['targets'].to(device)
 
-		inputs = {
-			'input_ids' : batch[0],
-			'attention_mask' : batch[1],
-			'labels' : batch[2]
-		}
+			outputs = model(
+				input_ids = input_ids,
+				attention_mask = attention_mask
+			)
 
-		with torch.no_grad() :
-			outputs = model(**inputs)
+			_, pred = torch.max(outputs, dim = 1)
+			prob = torch.softmax(outputs, dim = 1)
 
-		loss = outputs[0]
-		logits = outputs[1]
+			lossval = loss_fn(outputs, targets)
 
-		loss_total = loss_total + loss.item()
+			losses.append(lossval.item())
 
-		yprob.append(logits.detach().cpu().numpy())
-		ytrue.append(inputs['labels'].cpu().numpy())
+			ytrue.append(targets.numpy())
+			ypred.append(pred.numpy())
+			yprob.append(prob.numpy())
 
 	ytrue = numpy.concatenate(ytrue, axis = 0)
+	ypred = numpy.concatenate(ypred, axis = 0)
 	yprob = numpy.concatenate(yprob, axis = 0)
-	ypred = numpy.argmax(yprob, axis = 1).flatten()
 
-	return model, ytrue, ypred, yprob
+	loss = numpy.mean(losses)
 
-def bert_defsplit (dataset : DataFrame, save_model : bool = True, epochs : int = 1) -> dict :
+	return model, ytrue, ypred, yprob, loss
+
+def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : bool = True, epochs : int = 1) -> dict :
 	# Create device
 	device = torch.device('cpu')
 
+	# Lock random
+	numpy.random.seed(RANDOM_SEED)
+	torch.manual_seed(RANDOM_SEED)
+
 	# Split training and testing set
-	xtrain, xtest, ytrain, ytest = train_test_split(dataset.index.values, dataset.target.values,
-		train_size = 0.67,
-		random_state = None,
+	dataset_train, dataset_test = train_test_split(dataset,
+		test_size = 0.33,
+		random_state = RANDOM_SEED,
 		stratify = dataset.target.values
 	)
 
-	# Add data type marker
-	dataset.loc[xtrain, 'type'] = 'train'
-	dataset.loc[xtest, 'type'] = 'test'
+	# Create tokenizer
+	tokenizer = BertTokenizer.from_pretrained('bert-base-cased', truncation = True)
 
 	# Create train and test data loader
-	dataloader_train = bert_features(dataset = dataset[dataset['type'] == 'train'])
-	dataloader_test = bert_features(dataset = dataset[dataset['type'] == 'test'])
+	dataloader_train = create_dataloader(
+		dataset = dataset_train,
+		tokenizer = tokenizer,
+		max_len = MAX_LEN,
+		batch_size = BATCH_SIZE
+	)
+
+	dataloader_test = create_dataloader(
+		dataset = dataset_test,
+		tokenizer = tokenizer,
+		max_len = MAX_LEN,
+		batch_size = BATCH_SIZE
+	)
 
 	# Create model
-	model = create_bert(num_labels = len(dataset['target'].unique()))
+	model = create_bert(name = name, num_labels = len(dataset['target'].unique()))
+	model = model.to(device)
 
 	# Create optimizer function
-	optimizer = AdamW(model.parameters(), lr = 1e-5, eps = 1e-8)
+	optimizer = AdamW(model.parameters(), lr = 1e-5, correct_bias = False)
 
 	# Create scheduler
 	scheduler = get_linear_schedule_with_warmup(
@@ -124,71 +190,82 @@ def bert_defsplit (dataset : DataFrame, save_model : bool = True, epochs : int =
 		num_training_steps = epochs * len(dataloader_train)
 	)
 
+	# Create loss function
+	loss_fn = CrossEntropyLoss().to(device)
+
 	# Create lookup table
 	models = {
 		'device' : device,
 		'optimizer' : optimizer,
-		'scheduler' : scheduler
+		'scheduler' : scheduler,
+		'loss_fn' : loss_fn.float()
 	}
 
-	# Transform model for device type
-	model = model.to(device = device)
-
 	# Empty list for results
-	accuracy_class = numpy.zeros(shape = (len(dataset['target'].unique()),), dtype = list)
-	loss_avg_train = list()
-	loss_avg_test = list()
-	accuracy = list()
-	precision = list()
-	recall = list()
-	f1score = list()
-	brier = list()
-
-	for label in numpy.unique(dataset['target']) :
-		accuracy_class[label] = list()
-
-	def accuracy_per_class (y, x) :
-		acc_result = list()
-
-		for item in sorted(numpy.unique(y)) :
-			y_pred = x[y == item]
-			y_true = y[y == item]
-
-			acc_result.append(len(y_pred[y_pred == item]) / len(y_true))
-
-		return acc_result
+	history = defaultdict(list)
+	best_acc = 0
 
 	for epoch in range(epochs) :
 		# Train the model
-		model = bert_train(model = model, dataloader = dataloader_train, models = models)
+		model, ytrue, ypred, yprob, loss = bert_train(model = model, dataloader = dataloader_train, models = models)
+
+		# Save the results
+		result = evaluate_classification(ytrue = ytrue, ypred = ypred, yprob = yprob)
+
+		history['train_loss'].append(loss)
+
+		history['train_accuracy'].append(result['accuracy'])
+		history['train_precision'].append(result['precision'])
+		history['train_recall'].append(result['recall'])
+		history['train_f1_score'].append(result['f1_score'])
+		history['train_brier_score'].append(result['brier_score'])
 
 		# Predict the model
-		model, ytrue, ypred, yprob = bert_predict(model = model, dataloader = dataloader_test, models = models)
-
-		# Print out accuracy per class
-		for index, acc in enumerate(accuracy_per_class(y = ytrue, x = ypred)) :
-			accuracy_class[index].append(acc)
+		model, ytrue, ypred, yprob, loss = bert_predict(model = model, dataloader = dataloader_test, models = models)
 
 		# Evaluate the model
 		result = evaluate_classification(ytrue = ytrue, ypred = ypred, yprob = yprob)
 
 		# Save the results
-		accuracy.append(result['accuracy_score'])
-		precision.append(result['precision'])
-		recall.append(result['recall'])
-		f1score.append(result['f1_score'])
-		brier.append(result['brier_score'])
+		history['test_loss'].append(loss)
 
-	if save_model :
-		torch.save(model.state_dict(), 'out\\bert_model.dat')
+		history['test_accuracy'].append(result['accuracy'])
+		history['test_precision'].append(result['precision'])
+		history['test_recall'].append(result['recall'])
+		history['test_f1_score'].append(result['f1_score'])
+		history['test_brier_score'].append(result['brier_score'])
+
+		if save_model and result['accuracy'] > best_acc :
+			torch.save(model.state_dict(), f'out\\bert_{name}_model.dat')
+			best_acc = result['accuracy']
+
+	pyplot.figure(1)
+	pyplot.plot(history['train_accuracy'], label = 'Train')
+	pyplot.plot(history['test_accuracy'], label = 'Test')
+
+	pyplot.title('Accuracy History')
+	pyplot.ylabel('Accuracy')
+	pyplot.xlabel('Epoch')
+	pyplot.legend()
+	pyplot.ylim([0, 1])
+	pyplot.savefig(f'out\\bert_{name}_accuracy.png')
+
+	pyplot.figure(2)
+	pyplot.plot(history['train_loss'], label = 'Train')
+	pyplot.plot(history['test_loss'], label = 'Test')
+
+	pyplot.title('Loss History')
+	pyplot.ylabel('Loss')
+	pyplot.xlabel('Epoch')
+	pyplot.legend()
+	pyplot.ylim([0, 1])
+	pyplot.savefig(f'out\\bert_{name}_loss.png')
 
 	return {
-		'accuracy_per_class' : accuracy_class,
-		'loss_train_avg' : loss_avg_train,
-		'loss_test_avg' : loss_avg_test,
-		'accuracy_score' : accuracy,
-		'precision' : precision,
-		'recall' : recall,
-		'f1_score' : f1score,
-		'brier_score' : brier
+		'accuracy_score' : history['test_accuracy'],
+		'precision' : history['test_precision'],
+		'recall' : history['test_recall'],
+		'f1_score' : history['test_f1_score'],
+		'brier_score' : history['test_brier_score'],
+		'loss' : history['test_loss']
 	}

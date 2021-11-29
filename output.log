@@ -1,17 +1,17 @@
-2021-11-27 20:52:52,943 - root : INFO : Downloading [stopwords] from [nltk]...
-2021-11-27 20:52:52,994 - root : INFO : Downloading [names] from [nltk]...
-2021-11-27 20:52:52,995 - root : INFO : Downloading [wordnet] from [nltk]...
-2021-11-27 20:52:53,011 - root : INFO : Downloading [vader_lexicon] from [nltk]...
+2021-11-29 11:57:08,993 - root : INFO : Downloading [stopwords] from [nltk]...
+2021-11-29 11:57:09,041 - root : INFO : Downloading [names] from [nltk]...
+2021-11-29 11:57:09,042 - root : INFO : Downloading [wordnet] from [nltk]...
+2021-11-29 11:57:09,057 - root : INFO : Downloading [vader_lexicon] from [nltk]...
 
-2021-11-27 20:52:53,012 - root : INFO : Loading dataset and configuration files...
-2021-11-27 20:52:53,068 - root : INFO : Checking for any missing values in the dataset...
+2021-11-29 11:57:09,058 - root : INFO : Loading dataset and configuration files...
+2021-11-29 11:57:09,104 - root : INFO : Checking for any missing values in the dataset...
 
-2021-11-27 20:52:53,070 - root : DEBUG : Missing values:
+2021-11-29 11:57:09,106 - root : DEBUG : Missing values:
 target    0
 text      0
 dtype: int64
 
-2021-11-27 20:52:53,072 - root : DEBUG : Dataset header:
+2021-11-29 11:57:09,107 - root : DEBUG : Dataset header:
      target                                               text
 0   neutral                @VirginAmerica What @dhepburn said.
 1  positive  @VirginAmerica plus you've added commercials t...
@@ -19,59 +19,10 @@ dtype: int64
 3  negative  @VirginAmerica it's really aggressive to blast...
 4  negative  @VirginAmerica and it's a really big bad thing...
 
-2021-11-27 20:52:53,076 - root : DEBUG : Sentiment distribution:
+2021-11-29 11:57:09,110 - root : DEBUG : Sentiment distribution:
           count  frequency
 negative   9178   0.626913
 neutral    3099   0.211680
 positive   2363   0.161407
 
-2021-11-27 20:52:53,208 - root : INFO : Cleaning dataset text...
-2021-11-27 20:53:02,656 - root : INFO : Calculating polarity scores...
-2021-11-27 20:53:07,558 - root : INFO : Tokenizing dataset text...
-2021-11-27 20:53:07,594 - root : INFO : Stemming dataset text...
-2021-11-27 20:53:09,165 - root : INFO : Lemmatizing dataset text...
-
-2021-11-27 20:53:10,558 - root : DEBUG : Dataset header:
-     target                                               text                                             tokens  word_count  vader_compound  vader_positive  vader_negative  vader_neutral vader_prediction
-0   neutral                                         What said.                                             [said]           1          0.0000           0.000           0.000          1.000          neutral
-1  positive  plus you've added commercials to the experienc...                 [plu, ad, commerci, experi, tacki]           5          0.0000           0.000           0.000          1.000          neutral
-2   neutral  I didn't today... Must mean I need to take ano...             [today, must, mean, need, take, anoth]           6          0.0000           0.000           0.000          1.000          neutral
-3  negative  it's really aggressive to blast obnoxious "ent...  [realli, aggress, blast, obnoxi, entertain, gu...          10         -0.3306           0.187           0.345          0.468         negative
-4  negative           and it's a really big bad thing about it                          [realli, big, bad, thing]           4         -0.5829           0.000           0.557          0.443         negative
-
-2021-11-27 20:53:11,674 - root : DEBUG : Positive words : {'bubbl', 'swivel', 'anchorag', 'utah', 'allergi', 'hipster', 'hollywood', 'concert', 'bos', 'nomin', 'tacki', 'relief', 'bois', 'spotifi', 'andrew', 'pleasur', 'selfi', 'aww', 'wc', 'mountain', 'blueman', 'valley', 'chees', 'sweetheart', 'silicon', 'cream', 'trv', 'milan', 'cb', 'cockpit', 'painless', 'avert', 'xoxo', 'amazingli', 'hug', 'hero', 'ch', 'cessna', 'm', 'oui', 'fab', 'stair', 'caribbean', 'frontrunn', 'ooh', 'iconographi', 'chief', 'smoothest', 'liveri', 'resol', 'revu', 'greatest', 'grate', 'gaga', 'minim', 'pleasantli', 'yummi', 'smooth', 'delight', 'calm', 'naelah', 'fella', 'medal', 'rollercoast', 'eliz', 'beani', 'fo', 'star', 'worm', 'cali', 'phenomen', 'gfc', 'fashion', 'restr', 'graphic', 'greetingz', 'recogn', 'energi', 'virginamerica', 'gma', 'rn', 'cellphon', 'friendliest', 'gosh', 'recoveri', 'dbcvepnqc', 'recognit', 'woohoo', 'shoutout', 'product', 'lift', 'mn', 'moodlight', 'classiq', 'chocol', 'sedholm', 'killeen', 'nicest', 'happier', 'raeann'}
-2021-11-27 20:53:11,675 - root : DEBUG : Negative words : {'rd', 'troubl', 'diff', 'attitud', 'yell', 'lie', 'upset', 'write', 'floor', 'incompet', 'nightmar', 'hundr', 'cab', 'result', 'damag', 'paid', 'useless', 'ruin', 'broke', 'public', 'fuel', 'decid', 'hung', 'autom', 'estim', 'taxi', 'dividend', 'rent', 'rerout', 'avoid', 'rude', 'error', 'disconnect', 'fire', 'wtf', 'lack', 'bin', 'nobodi', 'funer', 'main', 'anymor', 'dont', 'confus', 'bother', 'midnight', 'deplan', 'advis', 'dog', 'hire', 'sell', 'insult', 'piss', 'unprofession', 'queue', 'flightat', 'callback', 'suitcas', 'clue', 'profit', 'plenti', 'courtesi', 'unhelp', 'normal', 'jetway', 'wors', 'equip', 'order', 'alon', 'overbook', 'mon', 'disgust', 'crap', 'door', 'crappi', 'mobil', 'excus', 'unaccept', 'imposs', 'merger', 'worst', 'embarrass', 'sister', 'third', 'prepar', 'log', 'annoy', 'merg', 'disast', 'rate', 'charact', 'fund', 'volum', 'shame', 'auto', 'pathet', 'extend', 'unhappi', 'cloth', 'failur', 'exist'}
-
-2021-11-27 20:53:11,675 - root : INFO : Creating classification target...
-2021-11-27 20:53:11,679 - root : INFO : Calculating number of positive and negative words....
-
-2021-11-27 20:53:11,703 - root : INFO : Adding a constant to all columns that have negative values....
-
-2021-11-27 20:53:11,709 - root : DEBUG : Dataset header:
-   target                                               text                                             tokens  word_count  vader_compound  vader_positive  vader_negative  vader_neutral  vader_prediction  pos_count  neg_count
-0       1                                         What said.                                             [said]           1          1.0000           0.000           0.000          1.000                 1          0          0
-1       2  plus you've added commercials to the experienc...                 [plu, ad, commerci, experi, tacki]           5          1.0000           0.000           0.000          1.000                 1          1          0
-2       1  I didn't today... Must mean I need to take ano...             [today, must, mean, need, take, anoth]           6          1.0000           0.000           0.000          1.000                 1          0          0
-3       0  it's really aggressive to blast obnoxious "ent...  [realli, aggress, blast, obnoxi, entertain, gu...          10          0.6694           0.187           0.345          0.468                 0          0          0
-4       0           and it's a really big bad thing about it                          [realli, big, bad, thing]           4          0.4171           0.000           0.557          0.443                 0          0          0
-
-2021-11-27 21:19:12,985 - root : INFO : [BERT (1 epochs)         ] Accuracy [0]: 0.98878 ± 0.00000
-2021-11-27 21:19:12,988 - root : INFO : [BERT (1 epochs)         ] Accuracy [1]: 0.00489 ± 0.00000
-2021-11-27 21:19:12,988 - root : INFO : [BERT (1 epochs)         ] Accuracy [2]: 0.00256 ± 0.00000
-2021-11-27 21:19:13,007 - root : INFO : Final report :
-                                          accuracy          precision             recall           f1_score        brier_score
-Majority Classifier              0.62691 ± 0.00000  0.39302 ± 0.00000  0.62691 ± 0.00000  0.48315 ± 0.00000  1.32501 ± 0.00000
-VADER Classifier (Argmax)        0.50355 ± 0.00000  0.68975 ± 0.00000  0.50355 ± 0.00000  0.52586 ± 0.00000          nan ± nan
-VADER As Feature (MNB)           0.63135 ± 0.00159  0.52328 ± 0.02532  0.63135 ± 0.00159  0.49336 ± 0.00326  0.47832 ± 0.00362
-VADER As Feature + Custom (MNB)  0.68026 ± 0.00810  0.55987 ± 0.06625  0.68026 ± 0.00810  0.58329 ± 0.00987  0.42309 ± 0.00687
-VADER As Feature (GNB)           0.65669 ± 0.00944  0.61473 ± 0.03661  0.65669 ± 0.00944  0.58975 ± 0.00609  0.49138 ± 0.01647
-VADER As Feature + Custom (GNB)  0.66831 ± 0.00920  0.56122 ± 0.06559  0.66831 ± 0.00920  0.59524 ± 0.00780  0.58245 ± 0.01584
-VADER As Feature (DT)            0.64795 ± 0.01536  0.59049 ± 0.01767  0.64795 ± 0.01536  0.60398 ± 0.01458  0.53657 ± 0.02628
-VADER As Feature + Custom (DT)   0.66926 ± 0.01726  0.65082 ± 0.01933  0.66926 ± 0.01726  0.65685 ± 0.01763  0.51972 ± 0.02460
-VADER As Feature (KNN)           0.62903 ± 0.01705  0.65654 ± 0.01769  0.62903 ± 0.01705  0.63338 ± 0.01180  0.53500 ± 0.03948
-VADER As Feature + Custom (KNN)  0.67309 ± 0.01649  0.65870 ± 0.01695  0.67309 ± 0.01649  0.66193 ± 0.01580  0.46968 ± 0.01854
-VADER As Feature (RF)            0.66626 ± 0.01378  0.61004 ± 0.01702  0.66626 ± 0.01378  0.61773 ± 0.01252  0.45735 ± 0.01647
-VADER As Feature + Custom (RF)   0.69214 ± 0.01759  0.67107 ± 0.02126  0.69214 ± 0.01759  0.67737 ± 0.01979  0.42714 ± 0.01783
-VADER As Feature (MV)            0.64652 ± 0.02775  0.62022 ± 0.02654  0.64652 ± 0.02775  0.61875 ± 0.01190  0.46859 ± 0.01705
-VADER As Feature + Custom (MV)   0.68217 ± 0.01880  0.67122 ± 0.02140  0.68217 ± 0.01880  0.67518 ± 0.01954  0.43636 ± 0.01840
-BERT (1 epochs)                  0.62127 ± 0.00000  0.46847 ± 0.00000  0.62127 ± 0.00000  0.48349 ± 0.00000  1.19319 ± 0.00000
+2021-11-29 11:57:09,225 - root : INFO : Cleaning dataset text...

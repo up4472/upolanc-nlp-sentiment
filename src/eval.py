@@ -37,3 +37,17 @@ def classification_to_list (results : dict) -> list :
 	bsc = f'{numpy.mean(results["brier_score"]):.5f} \u00B1 {numpy.std(results["brier_score"]):.5f}'
 
 	return [acc, pre, rec, f1s, bsc]
+
+def classification_to_list_foreach (results : dict, epochs : int) -> list :
+	result = []
+
+	for epoch in range(epochs) :
+		acc = f'{numpy.mean(results["accuracy_score"][epoch]):.5f} \u00B1 {numpy.std(results["accuracy_score"][epoch]):.5f}'
+		pre = f'{numpy.mean(results["precision"][epoch]):.5f} \u00B1 {numpy.std(results["precision"][epoch]):.5f}'
+		rec = f'{numpy.mean(results["recall"][epoch]):.5f} \u00B1 {numpy.std(results["recall"][epoch]):.5f}'
+		f1s = f'{numpy.mean(results["f1_score"][epoch]):.5f} \u00B1 {numpy.std(results["f1_score"][epoch]):.5f}'
+		bsc = f'{numpy.mean(results["brier_score"][epoch]):.5f} \u00B1 {numpy.std(results["brier_score"][epoch]):.5f}'
+
+		result.append([acc, pre, rec, f1s, bsc])
+
+	return result
