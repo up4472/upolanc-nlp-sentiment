@@ -80,10 +80,8 @@ def main (logger : Logger) -> None :
 	pyplot.legend()
 	pyplot.savefig('out\\distribution.png')
 
-	dataset['tokens'] = dataset['text'].copy()
-
 	logger.info('Cleaning dataset text...')
-	dataset = clean_text(dataset = dataset, column = 'tokens', stopwords = en_stopwords, punct = en_punct)
+	dataset = clean_text(dataset = dataset, column = 'text', stopwords = en_stopwords, punct = en_punct)
 
 	logger.info('Calculating polarity scores...')
 	dataset = compute_polarity(dataset = dataset, column = 'tokens')

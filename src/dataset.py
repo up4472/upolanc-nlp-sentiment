@@ -48,11 +48,6 @@ def clean_text (dataset : DataFrame, column : str, punct : str, stopwords : list
 	def clean_stopwords (text) :
 		return ' '.join([word for word in str(text).split() if word not in stopwords])
 
-	# Save semi-clean text
-	dataset['text'] = dataset[column].copy()
-	dataset['text'] = dataset['text'].apply(lambda x : clean_url(x))
-	dataset['text'] = dataset['text'].apply(lambda x : clean_mentions(x))
-
 	# To lowercase
 	dataset[column] = dataset[column].str.lower()
 
@@ -61,6 +56,9 @@ def clean_text (dataset : DataFrame, column : str, punct : str, stopwords : list
 
 	# Clean mentions
 	dataset[column] = dataset[column].apply(lambda x : clean_mentions(x))
+
+	# Make a copy of cleaned up text
+	dataset['bert_text'] = dataset[column].copy(deep = True)
 
 	# Clean emojis
 	dataset[column] = dataset[column].apply(lambda x : clean_emoji(x))
@@ -74,8 +72,14 @@ def clean_text (dataset : DataFrame, column : str, punct : str, stopwords : list
 	# Clean stopwords
 	dataset[column] = dataset[column].apply(lambda x : clean_stopwords(x))
 
+	# Make a copy of cleaned up text
+	dataset['tokens'] = dataset[column].copy(deep = True)
+
 	# Add number of words
 	dataset['word_count'] = dataset[column].apply(lambda x : len(x.split()))
+
+	# Add number of chars
+	dataset['char_count'] = dataset[column].apply(lambda x : len(x))
 
 	return dataset
 

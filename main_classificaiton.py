@@ -1,6 +1,9 @@
 from pandas import DataFrame
 from logging import Logger
 
+from src.models import MODELS
+from src.models import NAMES
+
 from src.dataset import compute_pos_neg
 from src.dataset import encode_target
 from src.eval import classification_to_list
@@ -10,10 +13,36 @@ from src.feature import vader_features
 from src.feature import vader_features_ext
 from src.models import models_kfold
 from src.bert import bert_defsplit
+from src.cnn_keras import cnn_keras_defsplit
+from src.cnn_keras import cnn_keras_kfold
+from src.system import init_device
 
 import numpy
 
-def __majority (dataset : DataFrame, report : list, names : list) :
+def get_ending (value: int) -> str :
+	if value == 1 : return 'st'
+	if value == 2 : return 'nd'
+	if value == 3 : return 'rd'
+	return 'th'
+
+def __append_report (results : dict, name : str, feature : str, report : list, foreach : bool = False) -> None :
+	items = [name, feature]
+
+	for result in classification_to_list(results = results) :
+		items.append(result)
+
+	report.append(items)
+
+	if foreach :
+		for index, history in enumerate(classification_to_list_foreach(results = results)) :
+			items = [f'{name} ({index + 1:2d}-{get_ending(index + 1)} fold)', feature]
+
+			for result in history :
+				items.append(result)
+
+			report.append(items)
+
+def __majority (dataset : DataFrame, report : list) :
 	majority = numpy.empty(shape = (len(dataset), 1))
 	majority.fill(dataset['target'].mode()[0])
 
@@ -26,48 +55,50 @@ def __majority (dataset : DataFrame, report : list, names : list) :
 		yprob = probabilty
 	)
 
-	report.append(classification_to_list(results = results))
-	names.append('Majority Classifier')
+	__append_report(results = results, name = 'Majority Classifier', feature = 'n/a', report = report)
 
-def __vader_v0 (dataset : DataFrame, report : list, names : list) -> None :
+def __vader_v0 (dataset : DataFrame, report : list) -> None :
 	results = evaluate_classification(
 		ytrue = dataset['target'].to_numpy(),
 		ypred = dataset['vader_prediction'].to_numpy()
 	)
 
-	report.append(classification_to_list(results = results))
-	names.append('Rule-Based [VADER Features]')
+	__append_report(results = results, name = 'Rule Based', feature = 'VADER', report = report)
 
-def __vader_v1 (dataset : DataFrame, name : str, report : list, names : list) -> None :
+def __vader_v1 (dataset : DataFrame, name : str, report : list, k_fold : int = 10) -> None :
 	xdata, ydata = vader_features(dataset = dataset)
 
-	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = 10)
+	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = k_fold)
 
-	report.append(classification_to_list(results = results))
-	names.append(f'{name} [VADER Features]')
+	__append_report(results = results, name = f'{NAMES[name]}', feature = 'VADER', report = report)
 
-def __vader_v2 (dataset : DataFrame, name : str, report : list, names : list) -> None :
+def __vader_v2 (dataset : DataFrame, name : str, report : list, k_fold : int = 10) -> None :
 	xdata, ydata = vader_features_ext(dataset = dataset)
 
-	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = 10)
+	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = k_fold)
 
-	report.append(classification_to_list(results = results))
-	names.append(f'{name} [VADER + Custom Feartures]')
+	__append_report(results = results, name = f'{NAMES[name]}', feature = 'custom + VADER', report = report)
 
-def __bert (dataset : DataFrame, epochs : int, report : list, names : list) -> None :
+def __bert (dataset : DataFrame, epochs : int, save_model : bool, report : list) -> None :
+	dataset = dataset[['target', 'bert_text']]
+
+	results = bert_defsplit(dataset = dataset, epochs = epochs, save_model = save_model)
+
+	__append_report(results = results, name = 'BERT', feature = 'BERT', report = report, foreach = True)
+
+def __cnn_keras_defsplit (dataset : DataFrame, epochs : int, report : list) -> None :
 	dataset = dataset[['target', 'text']]
 
-	results = bert_defsplit(dataset = dataset, epochs = epochs, name = 'sentiment', save_model = True)
+	results = cnn_keras_defsplit(dataset = dataset, epochs = epochs)
 
-	def get_ending (value : int) -> str :
-		if value == 1 : return 'st'
-		if value == 2 : return 'nd'
-		if value == 3 : return 'rd'
-		return 'th'
+	__append_report(results = results, name = 'CNN Keras (2|1)', feature = 'CNN Keras', report = report)
 
-	for index, result in enumerate(classification_to_list_foreach(results = results, epochs = epochs)) :
-		report.append(result)
-		names.append(f'BERT-sentiment [{index + 1}-{get_ending(index + 1)} epoch]')
+def __cnn_keras_kfold (dataset : DataFrame, epochs : int, report : list, k_fold : int = 10) -> None :
+	dataset = dataset[['target', 'text']]
+
+	results = cnn_keras_kfold(dataset = dataset, epochs = epochs, k_fold = k_fold)
+
+	__append_report(results = results, name = 'CNN Keras', feature = 'CNN Keras', report = report, foreach = True)
 
 def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, logger : Logger) -> None :
 	logger.info('Creating classification target...')
@@ -81,30 +112,37 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 
 	logger.debug('Dataset header:\n' + str(dataset.head()) + '\n')
 
+	# INIT DEVICE
+	init_device(logger = logger)
+
 	# REPORTS
-	columns = ['accuracy', 'precision', 'recall', 'f1_score', 'brier_score']
+	columns = ['model', 'features', 'accuracy', 'precision', 'recall', 'f1_score', 'brier_score']
 	reports = list()
-	names = list()
 
-	# MAJORITY VOTING
-	print('Running Majority')
-
-	__majority(dataset = dataset, report = reports, names = names)
+	# MAJORITY CLASSIFIER
+	logger.info('Processing majority classifier...')
+	__majority(dataset = dataset, report = reports)
 
 	# VADER + MACHINE LEARNING
-	print('Running VADERs')
+	logger.info('Processing VADER_v0 model...')
+	__vader_v0(dataset = dataset, report = reports)
 
-	__vader_v0(dataset = dataset, report = reports, names = names)
-
-	for name in ['MNB', 'GNB', 'DT', 'KNN', 'RF', 'MV'] :
-		__vader_v1(dataset = dataset, name = name, report = reports, names = names)
-		__vader_v2(dataset = dataset, name = name, report = reports, names = names)
+	for name in MODELS :
+		logger.info(f'Processing VADER_v1 model : {name}...')
+		__vader_v1(dataset = dataset, name = name, report = reports, k_fold = 10)
+		logger.info(f'Processing VADER_v2 model : {name}...')
+		__vader_v2(dataset = dataset, name = name, report = reports, k_fold = 10)
 
 	# BERT
-	print('Running BERTs')
-	__bert(dataset = dataset, epochs = 1, report = reports, names = names)
+	logger.info('Processing BERT model...')
+	# __bert(dataset = dataset, epochs = 1, save_model = True, report = reports)
+
+	# CNN
+	logger.info('Processing CNN model...\n')
+	__cnn_keras_defsplit(dataset = dataset, epochs = 5, report = reports)
+	__cnn_keras_kfold(dataset = dataset, epochs = 5, report = reports, k_fold = 10)
 
 	# PREPARE FINAL REPORT DATAFRAME
-	report = DataFrame(reports, columns = columns, index = names)
+	report = DataFrame(reports, columns = columns)
 
 	logger.info('Final report :\n' + str(report))

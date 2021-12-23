@@ -1,19 +1,29 @@
 from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import VotingClassifier
-from sklearn.ensemble import VotingRegressor
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neighbors import KNeighborsRegressor
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.tree import DecisionTreeRegressor
 from typing import Any
 
 from src.eval import evaluate_classification
+from src.system import get_random_state
+
+from collections import defaultdict
 
 import numpy
+
+MODELS = ['MNB', 'GNB', 'KNN', 'DT', 'RF', 'MV']
+
+NAMES = {
+	'MNB' : 'Naive Bayes (Multinomial)',
+	'GNB' : 'Naive Bayes (Gaussian)',
+	'KNN' : 'K-Nearest Neighbor',
+	'DT' : 'Decision Tree',
+	'RF' : 'Random Forest',
+	'MV' : 'Majority Voting'
+}
 
 def create_classification (name : str) -> Any :
 	return {
@@ -27,18 +37,6 @@ def create_classification (name : str) -> Any :
 			('DT', DecisionTreeClassifier()),
 			('RF', RandomForestClassifier())
 		], voting = 'soft')
-	}[name]
-
-def create_regression (name : str) -> Any :
-	return {
-		'KNN' : KNeighborsRegressor(),
-		'DT' : DecisionTreeRegressor(),
-		'RF' : RandomForestRegressor(),
-		'MV' : VotingRegressor([
-			('KNN', KNeighborsRegressor()),
-			('DT', DecisionTreeRegressor()),
-			('RF', RandomForestRegressor())
-		])
 	}[name]
 
 def model_train (model : Any, xdata : numpy.ndarray, ydata : numpy.array) -> Any :
@@ -57,14 +55,10 @@ def models_kfold (xdata : numpy.ndarray, ydata : numpy.array, model_name : str, 
 	model = create_classification(name = model_name)
 
 	# Define KFold
-	kf = StratifiedKFold(n_splits = k_fold)
+	kf = StratifiedKFold(n_splits = k_fold, shuffle = True, random_state = get_random_state())
 
 	# Empty list for results
-	accuracy = list()
-	precision = list()
-	recall = list()
-	f1score = list()
-	brier = list()
+	history = defaultdict(list)
 
 	# KFold loop
 	for train_index, test_index in kf.split(xdata, ydata) :
@@ -81,16 +75,16 @@ def models_kfold (xdata : numpy.ndarray, ydata : numpy.array, model_name : str, 
 		result = evaluate_classification(ytrue = ytrue, ypred = ypred, yprob = yprob)
 
 		# Save the results
-		accuracy.append(result['accuracy_score'])
-		precision.append(result['precision'])
-		recall.append(result['recall'])
-		f1score.append(result['f1_score'])
-		brier.append(result['brier_score'])
+		history['test_accuracy'].append(result['accuracy_score'])
+		history['test_precision'].append(result['precision'])
+		history['test_recall'].append(result['recall'])
+		history['test_f1_score'].append(result['f1_score'])
+		history['test_brier_score'].append(result['brier_score'])
 
 	return {
-		'accuracy_score' : accuracy,
-		'precision' : precision,
-		'recall' : recall,
-		'f1_score' : f1score,
-		'brier_score' : brier
+		'accuracy_score' : history['test_accuracy'],
+		'precision' : history['test_precision'],
+		'recall' : history['test_recall'],
+		'f1_score' : history['test_f1_score'],
+		'brier_score' : history['test_brier_score']
 	}

@@ -1,6 +1,5 @@
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
-from transformers import BertForSequenceClassification
 from transformers import BertTokenizer
 from transformers import AdamW
 from pandas import DataFrame
@@ -16,25 +15,19 @@ from tqdm import tqdm
 from src.classes import BertForSentimentClassification
 from src.classes import CustomDataset
 from src.eval import evaluate_classification
+from src.system import get_random_state
+from src.system import get_device
 
 import torch
 import numpy
 
 BATCH_SIZE = 128
-RANDOM_SEED = 17
 MAX_LEN = 100
 
 def create_bert (name : str, num_labels : int) -> Any :
 	return {
 		'sentiment' :
 			BertForSentimentClassification(n_classes = num_labels),
-		'sequance' :
-			# Will not work since different objects during training and predicting
-			BertForSequenceClassification.from_pretrained('bert-base-uncased',
-				num_labels = num_labels,
-				output_attentions = False,
-				output_hidden_states = False
-		)
 	}[name.lower()]
 
 def create_dataloader (dataset : DataFrame, tokenizer, max_len : int, batch_size : int) -> DataLoader :
@@ -145,16 +138,16 @@ def bert_predict (model : Any, dataloader : DataLoader, models : dict) :
 
 def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : bool = True, epochs : int = 1) -> dict :
 	# Create device
-	device = torch.device('cpu')
+	device = get_device()
 
 	# Lock random
-	numpy.random.seed(RANDOM_SEED)
-	torch.manual_seed(RANDOM_SEED)
+	numpy.random.seed(get_random_state())
+	torch.manual_seed(get_random_state())
 
 	# Split training and testing set
 	dataset_train, dataset_test = train_test_split(dataset,
 		test_size = 0.33,
-		random_state = RANDOM_SEED,
+		random_state = get_random_state(),
 		stratify = dataset.target.values
 	)
 
@@ -239,9 +232,11 @@ def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : b
 			torch.save(model.state_dict(), f'out\\bert_{name}_model.dat')
 			best_acc = result['accuracy_score']
 
-	pyplot.figure(1)
-	pyplot.plot(history['train_accuracy'], label = 'Train')
-	pyplot.plot(history['test_accuracy'], label = 'Test')
+	xdata = numpy.arange(1, 1 + epochs)
+
+	pyplot.figure()
+	pyplot.plot(xdata, history['train_accuracy'], label = 'Train')
+	pyplot.plot(xdata, history['test_accuracy'], label = 'Test')
 
 	pyplot.title('Accuracy History')
 	pyplot.ylabel('Accuracy')
@@ -250,9 +245,9 @@ def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : b
 	pyplot.ylim([0, 1])
 	pyplot.savefig(f'out\\bert_{name}_accuracy.png')
 
-	pyplot.figure(2)
-	pyplot.plot(history['train_loss'], label = 'Train')
-	pyplot.plot(history['test_loss'], label = 'Test')
+	pyplot.figure()
+	pyplot.plot(xdata, history['train_loss'], label = 'Train')
+	pyplot.plot(xdata, history['test_loss'], label = 'Test')
 
 	pyplot.title('Loss History')
 	pyplot.ylabel('Loss')

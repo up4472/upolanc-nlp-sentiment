@@ -1,4 +1,5 @@
 from sklearn.preprocessing import LabelBinarizer
+from typing import Dict
 
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
@@ -6,7 +7,7 @@ from sklearn.metrics import confusion_matrix
 
 import numpy
 
-def evaluate_classification (ytrue : numpy.ndarray, ypred : numpy.ndarray, yprob : numpy.ndarray = None) -> dict :
+def evaluate_classification (ytrue : numpy.ndarray, ypred : numpy.ndarray, yprob : numpy.ndarray = None) -> Dict[str, float] :
 	_accuracy = accuracy_score(y_true = ytrue, y_pred = ypred)
 	_confusion = confusion_matrix(y_true = ytrue, y_pred = ypred)
 	_metrics = precision_recall_fscore_support(y_true = ytrue, y_pred = ypred, average = 'weighted', zero_division = 0)
@@ -38,15 +39,15 @@ def classification_to_list (results : dict) -> list :
 
 	return [acc, pre, rec, f1s, bsc]
 
-def classification_to_list_foreach (results : dict, epochs : int) -> list :
+def classification_to_list_foreach (results : dict) -> list :
 	result = []
 
-	for epoch in range(epochs) :
-		acc = f'{numpy.mean(results["accuracy_score"][epoch]):.5f} \u00B1 {numpy.std(results["accuracy_score"][epoch]):.5f}'
-		pre = f'{numpy.mean(results["precision"][epoch]):.5f} \u00B1 {numpy.std(results["precision"][epoch]):.5f}'
-		rec = f'{numpy.mean(results["recall"][epoch]):.5f} \u00B1 {numpy.std(results["recall"][epoch]):.5f}'
-		f1s = f'{numpy.mean(results["f1_score"][epoch]):.5f} \u00B1 {numpy.std(results["f1_score"][epoch]):.5f}'
-		bsc = f'{numpy.mean(results["brier_score"][epoch]):.5f} \u00B1 {numpy.std(results["brier_score"][epoch]):.5f}'
+	for index in range(len(results['accuracy_score'])) :
+		acc = f'{numpy.mean(results["accuracy_score"][index]):.5f} \u00B1 {numpy.std(results["accuracy_score"][index]):.5f}'
+		pre = f'{numpy.mean(results["precision"][index]):.5f} \u00B1 {numpy.std(results["precision"][index]):.5f}'
+		rec = f'{numpy.mean(results["recall"][index]):.5f} \u00B1 {numpy.std(results["recall"][index]):.5f}'
+		f1s = f'{numpy.mean(results["f1_score"][index]):.5f} \u00B1 {numpy.std(results["f1_score"][index]):.5f}'
+		bsc = f'{numpy.mean(results["brier_score"][index]):.5f} \u00B1 {numpy.std(results["brier_score"][index]):.5f}'
 
 		result.append([acc, pre, rec, f1s, bsc])
 
