@@ -1,78 +1,54 @@
-from sklearn.model_selection import StratifiedKFold
+from typing import Dict
+from typing import List
+
 from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.layers import Conv1D
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Embedding
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import MaxPooling1D
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.callbacks import History
+from sklearn.model_selection import StratifiedKFold
+from gensim.models import Word2Vec
+
 from pandas import DataFrame
 from typing import Tuple
-from typing import Dict
 
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from collections import defaultdict
 
+from src.cnn import cnn_predict
+from src.cnn import cnn_train
+from src.cnn import create_cnn
 from src.system import get_random_state
-from src.eval import evaluate_classification
 
 import tensorflow.keras.preprocessing.sequence
 import tensorflow.keras.backend
+import os.path
 import numpy
 
-MAX_VOCAB_WORDS = 20000
+WORD2VEC_VOCAB = 'out\\word2vec_vocab.dat'
 EMBEDDING_DIM = 100
 BATCH_SIZE = 128
-MAX_SEQUENCE_LEN = 50
 
-def create_cnn (input_dim : int, output_dim : int, input_size : int, output_size : int, embedding_matrix : numpy.ndarray = None) -> Sequential :
-	model = Sequential()
+max_vocab_size = 10000
+max_seq_length = 25
 
-	if embedding_matrix is None :
-		model.add(Embedding(input_dim = input_dim, output_dim = output_dim, input_length = input_size))
-	else :
-		model.add(Embedding(input_dim = input_dim, output_dim = output_dim, input_length = input_size, weights = [embedding_matrix]))
+def __cnn_init (dataset : DataFrame) -> None :
+	global max_vocab_size
+	global max_seq_length
 
-	model.add(Conv1D(filters = 32, kernel_size = 3, padding = 'same', activation = 'relu'))
-	model.add(MaxPooling1D(pool_size = 2))
-
-	model.add(Conv1D(filters = 64, kernel_size = 3, padding = 'same', activation = 'relu'))
-	model.add(MaxPooling1D(pool_size = 2))
-
-	model.add(Conv1D(filters = 128, kernel_size = 5, padding = 'same', activation = 'relu'))
-	model.add(MaxPooling1D(pool_size = 2))
-
-	model.add(Flatten())
-	model.add(Dense(units = 128, activation = 'relu'))
-	model.add(Dense(units = output_size, activation = 'softmax'))
-
-	model.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
-
-	return model
-
-def cnn_keras_train (model : Sequential, xdata : numpy.ndarray, ydata : numpy.ndarray, epochs : int) -> History :
-	history = model.fit(xdata, ydata,
-		batch_size = BATCH_SIZE,
-		epochs = epochs,
-		validation_split = 0.1
-	)
-
-	return history
-
-def cnn_keras_predict (model : Sequential, xdata : numpy.ndarray, ydata : numpy.ndarray) -> Dict[str, float] :
-	yprob = model.predict(xdata, batch_size = BATCH_SIZE)
-
-	ytrue = numpy.argmax(ydata, axis = 1).flatten()
-	ypred = numpy.argmax(yprob, axis = 1).flatten()
-
-	return evaluate_classification(ytrue = ytrue, ypred = ypred, yprob = yprob)
+	max_seq_length = 1 + max(dataset['text'].apply(lambda x : len(x.split())))
+	max_vocab_size = 500 + len(set(numpy.concatenate(dataset['text'].apply(lambda x : x.split()).to_numpy())))
 
 def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : numpy.ndarray, y_test : numpy.ndarray,
-				 n_classes : int, epochs : int, history : dict, embedding_file : str) -> None :
-	sequence_length = MAX_SEQUENCE_LEN
-	vocab_size = MAX_VOCAB_WORDS
+				 n_classes : int, epochs : int, history : dict, embedding_file : str, embedding_type : str,
+				 dataset : DataFrame) -> None :
+
+	if embedding_type.lower() != 'glove' :
+		if embedding_type.lower() != 'word2vec' :
+			embedding_type = 'glove'
+
+	global max_seq_length
+	global max_vocab_size
+
+	seq_length = max_seq_length
+	vocab_size = max_vocab_size
 
 	# Tokenize vocabulary
 	tokenizer = Tokenizer(num_words = vocab_size)
@@ -81,18 +57,26 @@ def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : nump
 	x_train = tokenizer.texts_to_sequences(x_train)
 	x_test = tokenizer.texts_to_sequences(x_test)
 
-	x_train = tensorflow.keras.preprocessing.sequence.pad_sequences(x_train, maxlen = sequence_length)
-	x_test = tensorflow.keras.preprocessing.sequence.pad_sequences(x_test, maxlen = sequence_length)
+	x_train = tensorflow.keras.preprocessing.sequence.pad_sequences(x_train, maxlen = seq_length)
+	x_test = tensorflow.keras.preprocessing.sequence.pad_sequences(x_test, maxlen = seq_length)
 
 	# Update sequence length (safety check)
-	sequence_length = x_train.shape[1]
+	seq_length = x_train.shape[1]
 
 	# Compute embedding weight matrix
-	vocab_size, matrix = get_embedding_matrix(
-		filepath = embedding_file,
-		tokenizer = tokenizer,
-		vocab_size = vocab_size
-	)
+	if embedding_type.lower() == 'glove' :
+		vocab_size, matrix = get_glove_matrix(
+			filepath = embedding_file,
+			tokenizer = tokenizer,
+			vocab_size = vocab_size
+		)
+	else :
+		vocab_size, matrix = get_word2vec_matrix(
+			filepath = embedding_file,
+			dataset = dataset,
+			tokenizer = tokenizer,
+			vocab_size = vocab_size
+		)
 
 	# Clear cache and stuff
 	tensorflow.keras.backend.clear_session()
@@ -101,16 +85,16 @@ def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : nump
 	model = create_cnn(
 		input_dim = vocab_size,
 		output_dim = EMBEDDING_DIM,
-		input_size = sequence_length,
+		input_size = seq_length,
 		output_size = n_classes,
 		embedding_matrix = matrix
 	)
 
 	# Train the model
-	_ = cnn_keras_train(model = model, xdata = x_train, ydata = y_train, epochs = epochs)
+	_ = cnn_train(model = model, xdata = x_train, ydata = y_train, epochs = epochs, batch_size = BATCH_SIZE)
 
 	# Predict and evalute the model
-	results = cnn_keras_predict(model = model, xdata = x_test, ydata = y_test)
+	results = cnn_predict(model = model, xdata = x_test, ydata = y_test, batch_size = BATCH_SIZE)
 
 	# Save the results
 	history['test_accuracy'].append(results['accuracy_score'])
@@ -119,9 +103,17 @@ def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : nump
 	history['test_f1_score'].append(results['f1_score'])
 	history['test_brier_score'].append(results['brier_score'])
 
-def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str = None) -> dict :
+def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str = None,
+						embedding_type : str = None) -> Dict[str, List[float]] :
+
+	if embedding_type is None : embedding_type = 'glove'
 	if embedding_file is None :
-		embedding_file = 'res/glove.6B.100d.txt'
+		if embedding_type.lower() == 'glove' :
+			embedding_file = 'res/glove.6B.100d.txt'
+		if embedding_type.lower() == 'word2vec' :
+			embedding_file = 'res/w2v.100d.txt'
+
+	__cnn_init(dataset = dataset)
 
 	n = dataset['target'].nunique()
 	x = dataset['text'].to_numpy()
@@ -146,9 +138,11 @@ def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str 
 		y_train = y_train,
 		x_test = x_test,
 		y_test = y_test,
+		dataset = dataset,
 		n_classes = n,
 		epochs = epochs,
 		embedding_file = embedding_file,
+		embedding_type = embedding_type,
 		history = history
 	)
 
@@ -160,8 +154,17 @@ def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str 
 		'brier_score' : history['test_brier_score']
 	}
 
-def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_file : str = None) :
-	if embedding_file is None : embedding_file = 'res/glove.6B.100d.txt'
+def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_file : str = None,
+					 embedding_type : str = None) -> Dict[str, List[float]] :
+
+	if embedding_type is None : embedding_type = 'glove'
+	if embedding_file is None :
+		if embedding_type.lower() == 'glove' :
+			embedding_file = 'res/glove.6B.100d.txt'
+		if embedding_type.lower() == 'word2vec' :
+			embedding_file = 'res/w2v.100d.txt'
+
+	__cnn_init(dataset = dataset)
 
 	n = dataset['target'].nunique()
 	x = dataset['text'].to_numpy()
@@ -184,9 +187,11 @@ def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_
 			y_train = z[train],
 			x_test = x[test],
 			y_test = z[test],
+			dataset = dataset,
 			n_classes = n,
 			epochs = epochs,
 			embedding_file = embedding_file,
+			embedding_type = embedding_type,
 			history = history
 		)
 
@@ -198,7 +203,45 @@ def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_
 		'brier_score' : history['test_brier_score']
 	}
 
-def get_embedding_matrix (filepath : str, tokenizer : Tokenizer, vocab_size : int) -> Tuple[int, numpy.ndarray] :
+def get_word2vec_matrix (filepath : str, dataset : DataFrame, tokenizer : Tokenizer, vocab_size : int) -> Tuple[int, numpy.ndarray] :
+	if os.path.exists(filepath) :
+		model = Word2Vec.load(filepath)
+	else :
+		tokens = list(dataset['text'].apply(lambda x : x.split()).values)
+
+		model = Word2Vec(
+			sentences = tokens,
+			sg = 1,
+			vector_size = EMBEDDING_DIM,
+			window = 5,
+			workers = 4,
+			min_count = 1,
+			epochs = 20
+		)
+
+		model.save(filepath)
+
+	word_index = tokenizer.word_index
+	n_words = min(vocab_size, len(word_index) + 1)
+
+	embedding_index = {}
+	embedding_matrix = numpy.zeros((n_words, EMBEDDING_DIM))
+
+	for word in list(model.wv.index_to_key) :
+		embedding_index[word] = model.wv[word]
+
+	for word, index in tokenizer.word_index.items() :
+		if index >= n_words :
+			continue
+
+		embedding_vector = embedding_index.get(word)
+
+		if embedding_vector is not None :
+			embedding_matrix[index] = embedding_vector
+
+	return len(model.wv), embedding_matrix
+
+def get_glove_matrix (filepath : str, tokenizer : Tokenizer, vocab_size : int) -> Tuple[int, numpy.ndarray] :
 	def get_coef (item : str, *array) :
 		return item, numpy.asarray(array, dtype = numpy.float32)
 
