@@ -32,8 +32,8 @@ def create_bert (name : str, num_labels : int) -> Any :
 
 def create_dataloader (dataset : DataFrame, tokenizer, max_len : int, batch_size : int) -> DataLoader :
 	dataset = CustomDataset(
-		text = dataset.text.to_numpy(),
-		targets = dataset.target.to_numpy(),
+		text = dataset['bert_text'].to_numpy(),
+		targets = dataset['target'].to_numpy(),
 		tokenizer = tokenizer,
 		max_len = max_len
 	)
@@ -148,7 +148,7 @@ def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : b
 	dataset_train, dataset_test = train_test_split(dataset,
 		test_size = 0.33,
 		random_state = get_random_state(),
-		stratify = dataset.target.values
+		stratify = dataset['target'].values
 	)
 
 	# Create tokenizer

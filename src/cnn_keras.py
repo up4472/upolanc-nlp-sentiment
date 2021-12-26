@@ -29,12 +29,12 @@ BATCH_SIZE = 128
 max_vocab_size = 10000
 max_seq_length = 25
 
-def __cnn_init (dataset : DataFrame) -> None :
+def __cnn_init (dataset : DataFrame, column : str) -> None :
 	global max_vocab_size
 	global max_seq_length
 
-	max_seq_length = 1 + max(dataset['text'].apply(lambda x : len(x.split())))
-	max_vocab_size = 500 + len(set(numpy.concatenate(dataset['text'].apply(lambda x : x.split()).to_numpy())))
+	max_seq_length = 1 + max(dataset[column].apply(lambda x : len(x.split())))
+	max_vocab_size = 500 + len(set(numpy.concatenate(dataset[column].apply(lambda x : x.split()).to_numpy())))
 
 def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : numpy.ndarray, y_test : numpy.ndarray,
 				 n_classes : int, epochs : int, history : dict, embedding_file : str, embedding_type : str,
@@ -65,7 +65,7 @@ def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : nump
 
 	# Compute embedding weight matrix
 	if embedding_type.lower() == 'glove' :
-		vocab_size, matrix = get_glove_matrix(
+		vocab_size, matrix = get_embending_matrix(
 			filepath = embedding_file,
 			tokenizer = tokenizer,
 			vocab_size = vocab_size
@@ -113,10 +113,10 @@ def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str 
 		if embedding_type.lower() == 'word2vec' :
 			embedding_file = 'res/w2v.100d.txt'
 
-	__cnn_init(dataset = dataset)
+	__cnn_init(dataset = dataset, column = 'bert_text')
 
 	n = dataset['target'].nunique()
-	x = dataset['text'].to_numpy()
+	x = dataset['bert_text'].to_numpy()
 	y = dataset['target'].values
 
 	# To categorical target
@@ -164,10 +164,10 @@ def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_
 		if embedding_type.lower() == 'word2vec' :
 			embedding_file = 'res/w2v.100d.txt'
 
-	__cnn_init(dataset = dataset)
+	__cnn_init(dataset = dataset, column = 'bert_text')
 
 	n = dataset['target'].nunique()
-	x = dataset['text'].to_numpy()
+	x = dataset['bert_text'].to_numpy()
 	y = dataset['target'].values
 
 	# To categorical target
@@ -241,7 +241,7 @@ def get_word2vec_matrix (filepath : str, dataset : DataFrame, tokenizer : Tokeni
 
 	return len(model.wv), embedding_matrix
 
-def get_glove_matrix (filepath : str, tokenizer : Tokenizer, vocab_size : int) -> Tuple[int, numpy.ndarray] :
+def get_embending_matrix (filepath : str, tokenizer : Tokenizer, vocab_size : int) -> Tuple[int, numpy.ndarray] :
 	def get_coef (item : str, *array) :
 		return item, numpy.asarray(array, dtype = numpy.float32)
 

@@ -136,7 +136,7 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 
 	# BERT
 	logger.info('Processing BERT model...')
-	# __bert(dataset = dataset, epochs = 10, save_model = True, report = reports)
+	__bert(dataset = dataset, epochs = 5, save_model = True, report = reports)
 
 	# CNN
 	logger.info('Processing CNN model : Word2vec...')
