@@ -84,21 +84,21 @@ def __bert (dataset : DataFrame, epochs : int, save_model : bool, report : list)
 
 	results = bert_defsplit(dataset = dataset, epochs = epochs, save_model = save_model)
 
-	__append_report(results = results, name = 'BERT', feature = 'BERT', report = report, foreach = True)
+	__append_report(results = results, name = 'BERT', feature = 'BERT', report = report, foreach = False)
 
-def __cnn_keras_defsplit (dataset : DataFrame, epochs : int, report : list) -> None :
-	dataset = dataset[['target', 'text']]
+def __cnn_keras_defsplit (dataset : DataFrame, epochs : int, report : list, embedding_type : str) -> None :
+	dataset = dataset[['target', 'text', 'bert_text']]
 
-	results = cnn_keras_defsplit(dataset = dataset, epochs = epochs)
+	results = cnn_keras_defsplit(dataset = dataset, epochs = epochs, embedding_type = embedding_type.lower())
 
-	__append_report(results = results, name = 'CNN Keras (2|1)', feature = 'CNN Keras', report = report)
+	__append_report(results = results, name = 'CNN Keras', feature = embedding_type, report = report)
 
-def __cnn_keras_kfold (dataset : DataFrame, epochs : int, report : list, k_fold : int = 10) -> None :
-	dataset = dataset[['target', 'text']]
+def __cnn_keras_kfold (dataset : DataFrame, epochs : int, report : list, embedding_type : str, k_fold : int = 10, ) -> None :
+	dataset = dataset[['target', 'text', 'bert_text']]
 
-	results = cnn_keras_kfold(dataset = dataset, epochs = epochs, k_fold = k_fold)
+	results = cnn_keras_kfold(dataset = dataset, epochs = epochs, k_fold = k_fold, embedding_type = embedding_type.lower())
 
-	__append_report(results = results, name = 'CNN Keras', feature = 'CNN Keras', report = report, foreach = True)
+	__append_report(results = results, name = 'CNN Keras', feature = embedding_type, report = report, foreach = False)
 
 def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, logger : Logger) -> None :
 	logger.info('Creating classification target...')
@@ -130,17 +130,20 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	for name in MODELS :
 		logger.info(f'Processing VADER_v1 model : {name}...')
 		__vader_v1(dataset = dataset, name = name, report = reports, k_fold = 10)
+
 		logger.info(f'Processing VADER_v2 model : {name}...')
 		__vader_v2(dataset = dataset, name = name, report = reports, k_fold = 10)
 
 	# BERT
 	logger.info('Processing BERT model...')
-	# __bert(dataset = dataset, epochs = 1, save_model = True, report = reports)
+	# __bert(dataset = dataset, epochs = 10, save_model = True, report = reports)
 
 	# CNN
-	logger.info('Processing CNN model...\n')
-	__cnn_keras_defsplit(dataset = dataset, epochs = 5, report = reports)
-	__cnn_keras_kfold(dataset = dataset, epochs = 5, report = reports, k_fold = 10)
+	logger.info('Processing CNN model : Word2vec...')
+	__cnn_keras_kfold(dataset = dataset, epochs = 5, report = reports, k_fold = 10, embedding_type = 'Word2vec')
+
+	logger.info('Processing CNN model : GloVe...\n')
+	__cnn_keras_kfold(dataset = dataset, epochs = 5, report = reports, k_fold = 10, embedding_type = 'GloVe')
 
 	# PREPARE FINAL REPORT DATAFRAME
 	report = DataFrame(reports, columns = columns)

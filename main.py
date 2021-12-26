@@ -110,6 +110,8 @@ if __name__ == '__main__' :
 	logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 	logging.getLogger("matplotlib.font_manager").setLevel(logging.WARNING)
 	logging.getLogger("filelock").setLevel(logging.WARNING)
+	logging.getLogger("gensim.utils").setLevel(logging.WARNING)
+	logging.getLogger("smart_open.smart_open_lib").setLevel(logging.WARNING)
 
 	download_resources(logger = file_logger)
 	main(logger = file_logger)
