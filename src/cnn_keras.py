@@ -22,12 +22,9 @@ import tensorflow.keras.backend
 import os.path
 import numpy
 
-WORD2VEC_VOCAB = 'out\\word2vec_vocab.dat'
-EMBEDDING_DIM = 100
-BATCH_SIZE = 128
-
 max_vocab_size = 10000
 max_seq_length = 25
+embedding_dim = 100
 
 def __cnn_init (dataset : DataFrame, column : str) -> None :
 	global max_vocab_size
@@ -37,15 +34,14 @@ def __cnn_init (dataset : DataFrame, column : str) -> None :
 	max_vocab_size = 500 + len(set(numpy.concatenate(dataset[column].apply(lambda x : x.split()).to_numpy())))
 
 def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : numpy.ndarray, y_test : numpy.ndarray,
-				 n_classes : int, epochs : int, history : dict, embedding_file : str, embedding_type : str,
-				 dataset : DataFrame) -> None :
+				 n_classes : int, epochs : int, history : dict, embedding_file : str, dataset : DataFrame) -> None :
 
-	if embedding_type.lower() != 'glove' :
-		if embedding_type.lower() != 'word2vec' :
-			embedding_type = 'glove'
+	if embedding_file is None :
+		embedding_file = 'res/glove.6B.100d.txt'
 
 	global max_seq_length
 	global max_vocab_size
+	global embedding_dim
 
 	seq_length = max_seq_length
 	vocab_size = max_vocab_size
@@ -64,19 +60,11 @@ def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : nump
 	seq_length = x_train.shape[1]
 
 	# Compute embedding weight matrix
-	if embedding_type.lower() == 'glove' :
-		vocab_size, matrix = get_embending_matrix(
-			filepath = embedding_file,
-			tokenizer = tokenizer,
-			vocab_size = vocab_size
-		)
-	else :
-		vocab_size, matrix = get_word2vec_matrix(
-			filepath = embedding_file,
-			dataset = dataset,
-			tokenizer = tokenizer,
-			vocab_size = vocab_size
-		)
+	vocab_size, embedding_matrix = get_embending_matrix(
+		filepath = embedding_file,
+		tokenizer = tokenizer,
+		vocab_size = vocab_size
+	)
 
 	# Clear cache and stuff
 	tensorflow.keras.backend.clear_session()
@@ -84,17 +72,17 @@ def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : nump
 	# Create sequential neural network
 	model = create_cnn(
 		input_dim = vocab_size,
-		output_dim = EMBEDDING_DIM,
+		output_dim = embedding_dim,
 		input_size = seq_length,
 		output_size = n_classes,
-		embedding_matrix = matrix
+		embedding_matrix = embedding_matrix
 	)
 
 	# Train the model
-	_ = cnn_train(model = model, xdata = x_train, ydata = y_train, epochs = epochs, batch_size = BATCH_SIZE)
+	_ = cnn_train(model = model, xdata = x_train, ydata = y_train, epochs = epochs, batch_size = 128)
 
 	# Predict and evalute the model
-	results = cnn_predict(model = model, xdata = x_test, ydata = y_test, batch_size = BATCH_SIZE)
+	results = cnn_predict(model = model, xdata = x_test, ydata = y_test, batch_size = 128)
 
 	# Save the results
 	history['test_accuracy'].append(results['accuracy_score'])
@@ -103,16 +91,7 @@ def __cnn_keras (x_train : numpy.ndarray, y_train : numpy.ndarray, x_test : nump
 	history['test_f1_score'].append(results['f1_score'])
 	history['test_brier_score'].append(results['brier_score'])
 
-def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str = None,
-						embedding_type : str = None) -> Dict[str, List[float]] :
-
-	if embedding_type is None : embedding_type = 'glove'
-	if embedding_file is None :
-		if embedding_type.lower() == 'glove' :
-			embedding_file = 'res/glove.6B.100d.txt'
-		if embedding_type.lower() == 'word2vec' :
-			embedding_file = 'res/w2v.100d.txt'
-
+def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str = None) -> Dict[str, List[float]] :
 	__cnn_init(dataset = dataset, column = 'bert_text')
 
 	n = dataset['target'].nunique()
@@ -142,7 +121,6 @@ def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str 
 		n_classes = n,
 		epochs = epochs,
 		embedding_file = embedding_file,
-		embedding_type = embedding_type,
 		history = history
 	)
 
@@ -154,16 +132,7 @@ def cnn_keras_defsplit (dataset : DataFrame, epochs : int, embedding_file : str 
 		'brier_score' : history['test_brier_score']
 	}
 
-def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_file : str = None,
-					 embedding_type : str = None) -> Dict[str, List[float]] :
-
-	if embedding_type is None : embedding_type = 'glove'
-	if embedding_file is None :
-		if embedding_type.lower() == 'glove' :
-			embedding_file = 'res/glove.6B.100d.txt'
-		if embedding_type.lower() == 'word2vec' :
-			embedding_file = 'res/w2v.100d.txt'
-
+def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_file : str = None) -> Dict[str, List[float]] :
 	__cnn_init(dataset = dataset, column = 'bert_text')
 
 	n = dataset['target'].nunique()
@@ -191,7 +160,6 @@ def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_
 			n_classes = n,
 			epochs = epochs,
 			embedding_file = embedding_file,
-			embedding_type = embedding_type,
 			history = history
 		)
 
@@ -204,6 +172,8 @@ def cnn_keras_kfold (dataset : DataFrame, epochs : int, k_fold : int, embedding_
 	}
 
 def get_word2vec_matrix (filepath : str, dataset : DataFrame, tokenizer : Tokenizer, vocab_size : int) -> Tuple[int, numpy.ndarray] :
+	global embedding_dim
+
 	if os.path.exists(filepath) :
 		model = Word2Vec.load(filepath)
 	else :
@@ -212,7 +182,7 @@ def get_word2vec_matrix (filepath : str, dataset : DataFrame, tokenizer : Tokeni
 		model = Word2Vec(
 			sentences = tokens,
 			sg = 1,
-			vector_size = EMBEDDING_DIM,
+			vector_size = embedding_dim,
 			window = 5,
 			workers = 4,
 			min_count = 1,
@@ -225,7 +195,7 @@ def get_word2vec_matrix (filepath : str, dataset : DataFrame, tokenizer : Tokeni
 	n_words = min(vocab_size, len(word_index) + 1)
 
 	embedding_index = {}
-	embedding_matrix = numpy.zeros((n_words, EMBEDDING_DIM))
+	embedding_matrix = numpy.zeros((n_words, embedding_dim))
 
 	for word in list(model.wv.index_to_key) :
 		embedding_index[word] = model.wv[word]
@@ -246,13 +216,22 @@ def get_embending_matrix (filepath : str, tokenizer : Tokenizer, vocab_size : in
 		return item, numpy.asarray(array, dtype = numpy.float32)
 
 	with open(filepath, mode = 'r', encoding = 'utf8') as file :
-		embedding_index = dict(get_coef(*line.rstrip().rsplit()) for line in file)
+		vocabulary = [get_coef(*line.rstrip().rsplit()) for line in file]
+		# Check if len(word[1]) > 5, basically makes word2vec compatible with this glove read format, since word2vec
+		# file starts with a word count and vector size.
+		embedding_index = dict(word for word in vocabulary if len(word[1]) > 5)
+
+	global embedding_dim
+
+	for k, v in embedding_index.items() :
+		embedding_dim = len(v)
+		break
 
 	word_index = tokenizer.word_index
 	n_words = min(vocab_size, len(word_index) + 1)
 	embeddings = numpy.stack(embedding_index.values())
 
-	embedding_matrix = numpy.random.normal(embeddings.mean(), embeddings.std(), (n_words, EMBEDDING_DIM))
+	embedding_matrix = numpy.random.normal(embeddings.mean(), embeddings.std(), (n_words, embedding_dim))
 
 	for word, index in word_index.items() :
 		if index >= vocab_size :
