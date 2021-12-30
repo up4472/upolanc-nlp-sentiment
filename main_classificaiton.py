@@ -20,10 +20,10 @@ from src.system import init_device
 import numpy
 import time
 
-LOG_FOREACH = False		# logs metrics for each k when using kfold
+LOG_FOREACH = True		# logs metrics for each k when using kfold (only for BERT and CNN)
 DEFAULT_KFOLD = 10		# defaulf kfold
-BERT_EPOCHS = 5			# number of training epochs of bert
-CNN_EPOCHS = 5			# number of training epochs of cnn keras
+BERT_EPOCHS = 5			# number of training epochs for bert
+CNN_EPOCHS = 5			# number of training epochs for cnn keras
 
 def get_ending (value: int) -> str :
 	if value == 1 : return 'st'
@@ -82,7 +82,7 @@ def __vader_core (dataset : DataFrame, name : str, report : list) -> float :
 	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = DEFAULT_KFOLD)
 	e = time.perf_counter_ns()
 
-	__append_report(results = results, name = f'{NAMES[name]}', feature = 'VADER', report = report, foreach = LOG_FOREACH)
+	__append_report(results = results, name = f'{NAMES[name]}', feature = 'VADER', report = report)
 
 	return (e - s) / 1e+9
 
@@ -94,7 +94,7 @@ def __vader_extended (dataset : DataFrame, name : str, report : list) -> float :
 	results = models_kfold(xdata = xdata, ydata = ydata, model_name = name, k_fold = DEFAULT_KFOLD)
 	e = time.perf_counter_ns()
 
-	__append_report(results = results, name = f'{NAMES[name]}', feature = 'custom + VADER', report = report, foreach = LOG_FOREACH)
+	__append_report(results = results, name = f'{NAMES[name]}', feature = 'custom + VADER', report = report)
 
 	return (e - s) / 1e+9
 
@@ -171,8 +171,8 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 		log_info(model_name = name, feature_name = 'VADER + custom', seconds = runtime)
 
 	# BERT
-	# __bert(dataset = dataset, epochs = BERT_EPOCHS, save_model = True, report = reports)
-	# log_info(model_name = 'BERT', feature_name = 'BERT', seconds = runtime)
+	runtime = __bert(dataset = dataset, epochs = BERT_EPOCHS, save_model = True, report = reports)
+	log_info(model_name = 'BERT', feature_name = 'BERT', seconds = runtime)
 
 	# CNN + WORD2VEC | GLOVE
 	runtime = __cnn_keras_kfold(dataset = dataset, epochs = CNN_EPOCHS, report = reports, embedding_file = 'res/glove.6B.100d.txt')
@@ -181,8 +181,8 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	runtime = __cnn_keras_kfold(dataset = dataset, epochs = CNN_EPOCHS, report = reports, embedding_file = 'res/glove.6B.200d.txt')
 	log_info(model_name = 'CNN Keras', feature_name = 'glove.6B.200d', seconds = runtime)
 
-	runtime = __cnn_keras_kfold(dataset = dataset, epochs = CNN_EPOCHS, report = reports, embedding_file = 'res/word2vec.2M.300d.txt')
-	log_info(model_name = 'CNN Keras', feature_name = 'word2vec.2M.300d', seconds = runtime)
+	runtime = __cnn_keras_kfold(dataset = dataset, epochs = CNN_EPOCHS, report = reports, embedding_file = 'res/crawl.2M.300d.txt')
+	log_info(model_name = 'CNN Keras', feature_name = 'crawl.2M.300d', seconds = runtime)
 
 	# PREPARE FINAL REPORT DATAFRAME
 	report = DataFrame(reports, columns = columns)

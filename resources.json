@@ -1,0 +1,16 @@
+{
+	"pretrained-models" : [
+		{
+			"filepath" : "res\\glove.6B.100d.txt",
+			"download" : "https://www.kaggle.com/danielwillgeorge/glove6b100dtxt"
+		},
+		{
+			"filepath" : "res\\glove.6B.200d.txt",
+			"download" : "https://www.kaggle.com/incorpes/glove6b200d"
+		},
+		{
+			"filepath" : "res\\crawl.2M.300d.txt",
+			"download" : "https://fasttext.cc/docs/en/english-vectors.html"
+		}
+	]
+}
