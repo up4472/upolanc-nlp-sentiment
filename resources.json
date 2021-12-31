@@ -9,8 +9,8 @@
 			"download" : "https://www.kaggle.com/incorpes/glove6b200d"
 		},
 		{
-			"filepath" : "res\\crawl.2M.300d.txt",
-			"download" : "https://fasttext.cc/docs/en/english-vectors.html"
+			"filepath" : "res\\crawl-300d-2M.vec",
+			"download" : "https://www.kaggle.com/yekenot/fasttext-crawl-300d-2m"
 		}
 	]
 }

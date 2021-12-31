@@ -229,7 +229,7 @@ def bert_defsplit (dataset : DataFrame, name : str = 'sentiment', save_model : b
 		history['test_brier_score'].append(result['brier_score'])
 
 		if save_model and result['accuracy_score'] > best_acc :
-			torch.save(model.state_dict(), f'res\\bert.{epoch}e.dat')
+			torch.save(model.state_dict(), f'res\\bert.dat')
 			best_acc = result['accuracy_score']
 
 	xdata = numpy.arange(1, 1 + epochs)

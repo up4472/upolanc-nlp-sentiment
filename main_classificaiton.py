@@ -135,7 +135,7 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	logger.info('Creating classification target...')
 	dataset, encoder = encode_target(dataset = dataset, target = 'target', column = 'vader_prediction')
 
-	logger.info('Calculating number of positive and negative words....\n')
+	logger.info('Calculating number of positive and negative words....')
 	dataset = compute_pos_neg(dataset = dataset, column = 'tokens', pos_words = pos_words, neg_words = neg_words)
 
 	logger.info('Adding a constant to all columns that have negative values....\n')
@@ -150,8 +150,13 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	columns = ['model', 'features', 'accuracy', 'precision', 'recall', 'f1_score', 'brier_score']
 	reports = list()
 
-	def log_info (model_name : str, feature_name : str, seconds : float) -> None :
-		logger.info(f'Processed [{model_name:10s}] model with [{feature_name:17s}] features in [{seconds:12.2f}] seconds ...')
+	def log_info (model_name : str, feature_name : str, seconds : float, empty_line : bool = False) -> None :
+		text = f'Processed [{model_name:10s}] model with [{feature_name:17s}] features in [{seconds:12.2f}] seconds ...'
+
+		if empty_line :
+			logger.info(text + '\n')
+		else :
+			logger.info(text)
 
 	# MAJORITY CLASSIFIER
 	runtime = __majority(dataset = dataset, report = reports)
@@ -181,10 +186,8 @@ def main_classification (dataset : DataFrame, pos_words : set, neg_words : set, 
 	runtime = __cnn_keras_kfold(dataset = dataset, epochs = CNN_EPOCHS, report = reports, embedding_file = 'res/glove.6B.200d.txt')
 	log_info(model_name = 'CNN Keras', feature_name = 'glove.6B.200d', seconds = runtime)
 
-	runtime = __cnn_keras_kfold(dataset = dataset, epochs = CNN_EPOCHS, report = reports, embedding_file = 'res/crawl.2M.300d.txt')
-	log_info(model_name = 'CNN Keras', feature_name = 'crawl.2M.300d', seconds = runtime)
+	runtime = __cnn_keras_kfold(dataset = dataset, epochs = CNN_EPOCHS, report = reports, embedding_file = 'res/crawl-300d-2M.vec')
+	log_info(model_name = 'CNN Keras', feature_name = 'crawl.2M.300d', seconds = runtime, empty_line = True)
 
 	# PREPARE FINAL REPORT DATAFRAME
-	report = DataFrame(reports, columns = columns)
-
-	logger.info('Final report :\n' + str(report))
+	logger.info('Final report :\n' + str(DataFrame(reports, columns = columns)))

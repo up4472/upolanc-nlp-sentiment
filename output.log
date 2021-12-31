@@ -1,17 +1,17 @@
-2021-12-28 13:53:46,036 - root : INFO : Downloading [stopwords] from [nltk]...
-2021-12-28 13:53:46,091 - root : INFO : Downloading [names] from [nltk]...
-2021-12-28 13:53:46,092 - root : INFO : Downloading [wordnet] from [nltk]...
-2021-12-28 13:53:46,109 - root : INFO : Downloading [vader_lexicon] from [nltk]...
+2021-12-30 16:15:59,788 - root : INFO : Downloading [stopwords] from [nltk]...
+2021-12-30 16:15:59,837 - root : INFO : Downloading [names] from [nltk]...
+2021-12-30 16:15:59,837 - root : INFO : Downloading [wordnet] from [nltk]...
+2021-12-30 16:15:59,855 - root : INFO : Downloading [vader_lexicon] from [nltk]...
 
-2021-12-28 13:53:46,110 - root : INFO : Loading dataset and configuration files...
-2021-12-28 13:53:46,181 - root : INFO : Checking for any missing values in the dataset...
+2021-12-30 16:15:59,856 - root : INFO : Loading dataset and configuration files...
+2021-12-30 16:15:59,916 - root : INFO : Checking for any missing values in the dataset...
 
-2021-12-28 13:53:46,183 - root : DEBUG : Missing values:
+2021-12-30 16:15:59,918 - root : DEBUG : Missing values:
 target    0
 text      0
 dtype: int64
 
-2021-12-28 13:53:46,195 - root : DEBUG : Dataset header:
+2021-12-30 16:15:59,919 - root : DEBUG : Dataset header:
      target                                               text
 0   neutral                @VirginAmerica What @dhepburn said.
 1  positive  @VirginAmerica plus you've added commercials t...
@@ -19,18 +19,18 @@ dtype: int64
 3  negative  @VirginAmerica it's really aggressive to blast...
 4  negative  @VirginAmerica and it's a really big bad thing...
 
-2021-12-28 13:53:46,199 - root : DEBUG : Sentiment distribution:
+2021-12-30 16:15:59,923 - root : DEBUG : Sentiment distribution:
           count  frequency
 negative   9178   0.626913
 neutral    3099   0.211680
 positive   2363   0.161407
 
-2021-12-28 13:53:46,448 - root : INFO : Cleaning dataset text...
-2021-12-28 13:53:56,161 - root : INFO : Calculating polarity scores...
-2021-12-28 13:54:01,213 - root : INFO : Tokenizing dataset text...
-2021-12-28 13:54:01,259 - root : INFO : Lemmatizing dataset text...
+2021-12-30 16:16:00,103 - root : INFO : Cleaning dataset text...
+2021-12-30 16:16:10,208 - root : INFO : Calculating polarity scores...
+2021-12-30 16:16:15,301 - root : INFO : Tokenizing dataset text...
+2021-12-30 16:16:15,339 - root : INFO : Lemmatizing dataset text...
 
-2021-12-28 13:54:02,720 - root : DEBUG : Dataset header:
+2021-12-30 16:16:16,760 - root : DEBUG : Dataset header:
      target                                               text                                          bert_text                                             tokens  word_count  char_count  vader_compound  vader_positive  vader_negative  vader_neutral vader_prediction
 0   neutral                                               said                                         what said.                                             [said]           1           4          0.0000           0.000           0.000          1.000          neutral
 1  positive            plus added commercials experience tacky  plus you've added commercials to the experienc...       [plus, added, commercial, experience, tacky]           5          39          0.0000           0.000           0.000          1.000          neutral
@@ -38,14 +38,14 @@ positive   2363   0.161407
 3  negative  really aggressive blast obnoxious entertainmen...  it's really aggressive to blast obnoxious "ent...  [really, aggressive, blast, obnoxious, enterta...          10          80         -0.3306           0.187           0.345          0.468         negative
 4  negative                               really big bad thing           and it's a really big bad thing about it                          [really, big, bad, thing]           4          20         -0.5829           0.000           0.557          0.443         negative
 
-2021-12-28 13:54:03,847 - root : DEBUG : Positive words : {'caribbean', 'stair', 'frontrunner', 'delight', 'gfc', 'ooh', 'rn', 'represents', 'relaxing', 'woohoo', 'sweetheart', 'comfortable', 'oui', 'fab', 'entertaining', 'fella', 'spelling', 'chocolate', 'pleasure', 'phenomenal', 'personalized', 'cessna', 'averted', 'pleasantly', 'mark', 'cali', 'mn', 'clarifying', 'relief', 'goodness', 'gosh', 'concert', 'engaging', 'cheese', 'chs', 'wc', 'eliz', 'livery', 'smile', 'beautifully', 'appreciation', 'rocked', 'greatest', 'squared', 'killed', 'impress', 'base', 'crewmembers', 'recognition', 'happier', 'celebrating', 'yummy', 'mountain', 'awesomeness', 'rollercoaster', 'dancing', 'reminder', 'graphic', 'energy', 'beauty', 'smooth', 'aww', 'chief', 'attentiveness', 'dbcvepnqc', 'allergy', 'recovery', 'cockpit', 'cream', 'cb', 'anchorage', 'hug', 'xoxo', 'refreshing', 'product', 'delighted', 'grateful', 'exceptional', 'boise', 'amazingly', 'utah', 'shoutout', 'bluemanity', 'smoothest', 'application', 'cellphone', 'fo', 'painless', 'slowing', 'medal', 'accomplished', 'removal', 'informative', 'hero', 'affordable', 'star', 'friendliest', 'lo', 'nicest', 'm'}
-2021-12-28 13:54:03,847 - root : DEBUG : Negative words : {'loaded', 'lose', 'plenty', 'closed', 'volume', 'failed', 'lie', 'worst', 'unacceptable', 'paid', 'useless', 'fuel', 'mon', 'messed', 'acceptable', 'receive', 'jetway', 'third', 'disappointed', 'turn', 'hung', 'merger', 'happening', 'nightmare', 'callback', 'trouble', 'switched', 'text', 'clothes', 'ruined', 'automated', 'wtf', 'attitude', 'charged', 'compensate', 'fuck', 'equipment', 'usairways', 'ruining', 'fail', 'rd', 'incompetence', 'taxi', 'nobody', 'worse', 'pathetic', 'allowed', 'except', 'upset', 'refuse', 'door', 'disappointing', 'disconnect', 'notice', 'unhappy', 'bin', 'lack', 'resolve', 'rude', 'broke', 'auto', 'anymore', 'caused', 'alone', 'bother', 'forced', 'hire', 'impossible', 'pull', 'promised', 'courtesy', 'unhelpful', 'suitcase', 'funeral', 'compensation', 'dividend', 'actual', 'ridiculous', 'changing', 'confirm', 'character', 'wasted', 'excuse', 'disconnected', 'dont', 'training', 'diff', 'clue', 'manager', 'mobile', 'damaged', 'partner', 'slow', 'failure', 'personal', 'error', 'cause', 'rate', 'allow', 'screw'}
+2021-12-30 16:16:17,895 - root : DEBUG : Positive words : {'clarifying', 'cali', 'mn', 'cb', 'pleasantly', 'yummy', 'spelling', 'affordable', 'lo', 'woohoo', 'grateful', 'nicest', 'refreshing', 'beauty', 'celebrating', 'represents', 'happier', 'cheese', 'fo', 'boise', 'amazingly', 'averted', 'cream', 'informative', 'entertaining', 'chief', 'frontrunner', 'caribbean', 'base', 'eliz', 'medal', 'smooth', 'greatest', 'smoothest', 'chs', 'fab', 'comfortable', 'chocolate', 'relief', 'engaging', 'shoutout', 'cellphone', 'stair', 'gosh', 'xoxo', 'attentiveness', 'personalized', 'phenomenal', 'graphic', 'crewmembers', 'livery', 'relaxing', 'smile', 'mark', 'goodness', 'utah', 'awesomeness', 'energy', 'rn', 'wc', 'aww', 'beautifully', 'mountain', 'recognition', 'cockpit', 'pleasure', 'removal', 'killed', 'product', 'star', 'hug', 'm', 'rocked', 'dancing', 'delight', 'gfc', 'ooh', 'bluemanity', 'accomplished', 'exceptional', 'delighted', 'squared', 'reminder', 'application', 'oui', 'appreciation', 'impress', 'allergy', 'dbcvepnqc', 'sweetheart', 'concert', 'friendliest', 'slowing', 'anchorage', 'rollercoaster', 'fella', 'recovery', 'hero', 'painless', 'cessna'}
+2021-12-30 16:16:17,896 - root : DEBUG : Negative words : {'pull', 'confirm', 'bin', 'door', 'usairways', 'nightmare', 'taxi', 'error', 'disappointed', 'wasted', 'resolve', 'damaged', 'happening', 'third', 'mobile', 'lose', 'funeral', 'text', 'plenty', 'ruined', 'character', 'actual', 'caused', 'unacceptable', 'clothes', 'rude', 'trouble', 'diff', 'messed', 'fuck', 'closed', 'rd', 'anymore', 'bother', 'slow', 'turn', 'attitude', 'ruining', 'hung', 'incompetence', 'promised', 'allow', 'allowed', 'wtf', 'impossible', 'receive', 'compensation', 'rate', 'disconnect', 'lack', 'auto', 'volume', 'screw', 'pathetic', 'training', 'dividend', 'switched', 'partner', 'ridiculous', 'notice', 'failure', 'upset', 'callback', 'disconnected', 'suitcase', 'nobody', 'fuel', 'worse', 'except', 'equipment', 'jetway', 'unhelpful', 'failed', 'mon', 'merger', 'clue', 'excuse', 'broke', 'acceptable', 'unhappy', 'worst', 'fail', 'useless', 'lie', 'charged', 'automated', 'refuse', 'paid', 'hire', 'forced', 'personal', 'compensate', 'disappointing', 'alone', 'loaded', 'cause', 'changing', 'manager', 'dont', 'courtesy'}
 
-2021-12-28 13:54:03,847 - root : INFO : Creating classification target...
-2021-12-28 13:54:03,852 - root : INFO : Calculating number of positive and negative words....
-2021-12-28 13:54:03,873 - root : INFO : Adding a constant to all columns that have negative values....
+2021-12-30 16:16:17,896 - root : INFO : Creating classification target...
+2021-12-30 16:16:17,900 - root : INFO : Calculating number of positive and negative words....
+2021-12-30 16:16:17,923 - root : INFO : Adding a constant to all columns that have negative values....
 
-2021-12-28 13:54:03,878 - root : DEBUG : Dataset header:
+2021-12-30 16:16:17,928 - root : DEBUG : Dataset header:
    target                                               text                                          bert_text                                             tokens  word_count  char_count  vader_compound  vader_positive  vader_negative  vader_neutral  vader_prediction  pos_count  neg_count
 0       1                                               said                                         what said.                                             [said]           1           4          1.0000           0.000           0.000          1.000                 1          0          0
 1       2            plus added commercials experience tacky  plus you've added commercials to the experienc...       [plus, added, commercial, experience, tacky]           5          39          1.0000           0.000           0.000          1.000                 1          0          0
@@ -53,79 +53,79 @@ positive   2363   0.161407
 3       0  really aggressive blast obnoxious entertainmen...  it's really aggressive to blast obnoxious "ent...  [really, aggressive, blast, obnoxious, enterta...          10          80          0.6694           0.187           0.345          0.468                 0          0          0
 4       0                               really big bad thing           and it's a really big bad thing about it                          [really, big, bad, thing]           4          20          0.4171           0.000           0.557          0.443                 0          0          0
 
-2021-12-28 13:54:03,879 - root : INFO : Using CPU cores for neural networks...
+2021-12-30 16:16:17,929 - root : INFO : Using CPU cores for neural networks...
 
-2021-12-28 13:54:03,885 - root : INFO : Processed [Majority  ] model with [-                ] features in [        0.00] seconds ...
-2021-12-28 13:54:03,891 - root : INFO : Processed [Rule Based] model with [VADER            ] features in [        0.00] seconds ...
-2021-12-28 13:54:03,927 - root : INFO : Processed [MNB       ] model with [VADER            ] features in [        0.03] seconds ...
-2021-12-28 13:54:03,970 - root : INFO : Processed [GNB       ] model with [VADER            ] features in [        0.04] seconds ...
-2021-12-28 13:54:04,621 - root : INFO : Processed [KNN       ] model with [VADER            ] features in [        0.65] seconds ...
-2021-12-28 13:54:04,850 - root : INFO : Processed [DT        ] model with [VADER            ] features in [        0.23] seconds ...
-2021-12-28 13:54:14,558 - root : INFO : Processed [RF        ] model with [VADER            ] features in [        9.71] seconds ...
-2021-12-28 13:54:25,478 - root : INFO : Processed [MV        ] model with [VADER            ] features in [       10.92] seconds ...
-2021-12-28 13:54:25,523 - root : INFO : Processed [MNB       ] model with [VADER + custom   ] features in [        0.04] seconds ...
-2021-12-28 13:54:25,576 - root : INFO : Processed [GNB       ] model with [VADER + custom   ] features in [        0.05] seconds ...
-2021-12-28 13:54:26,415 - root : INFO : Processed [KNN       ] model with [VADER + custom   ] features in [        0.84] seconds ...
-2021-12-28 13:54:26,727 - root : INFO : Processed [DT        ] model with [VADER + custom   ] features in [        0.31] seconds ...
-2021-12-28 13:54:35,840 - root : INFO : Processed [RF        ] model with [VADER + custom   ] features in [        9.11] seconds ...
-2021-12-28 13:54:46,104 - root : INFO : Processed [MV        ] model with [VADER + custom   ] features in [       10.26] seconds ...
-2021-12-28 22:04:00,924 - root : INFO : Processed [BERT      ] model with [BERT             ] features in [    29353.79] seconds ...
-2021-12-28 22:07:30,432 - root : INFO : Processed [CNN Keras ] model with [glove.6B.100d    ] features in [      209.49] seconds ...
-2021-12-28 22:13:26,015 - root : INFO : Processed [CNN Keras ] model with [glove.6B.200d    ] features in [      355.58] seconds ...
-2021-12-28 22:43:57,770 - root : INFO : Processed [CNN Keras ] model with [crawl.2M.300d    ] features in [     1831.75] seconds ...
+2021-12-30 16:16:17,936 - root : INFO : Processed [Majority  ] model with [-                ] features in [        0.00] seconds ...
+2021-12-30 16:16:17,941 - root : INFO : Processed [Rule Based] model with [VADER            ] features in [        0.00] seconds ...
+2021-12-30 16:16:17,980 - root : INFO : Processed [MNB       ] model with [VADER            ] features in [        0.04] seconds ...
+2021-12-30 16:16:18,025 - root : INFO : Processed [GNB       ] model with [VADER            ] features in [        0.04] seconds ...
+2021-12-30 16:16:18,694 - root : INFO : Processed [KNN       ] model with [VADER            ] features in [        0.67] seconds ...
+2021-12-30 16:16:18,921 - root : INFO : Processed [DT        ] model with [VADER            ] features in [        0.23] seconds ...
+2021-12-30 16:16:28,537 - root : INFO : Processed [RF        ] model with [VADER            ] features in [        9.62] seconds ...
+2021-12-30 16:16:38,873 - root : INFO : Processed [MV        ] model with [VADER            ] features in [       10.34] seconds ...
+2021-12-30 16:16:38,918 - root : INFO : Processed [MNB       ] model with [VADER + custom   ] features in [        0.04] seconds ...
+2021-12-30 16:16:38,970 - root : INFO : Processed [GNB       ] model with [VADER + custom   ] features in [        0.05] seconds ...
+2021-12-30 16:16:39,796 - root : INFO : Processed [KNN       ] model with [VADER + custom   ] features in [        0.83] seconds ...
+2021-12-30 16:16:40,103 - root : INFO : Processed [DT        ] model with [VADER + custom   ] features in [        0.31] seconds ...
+2021-12-30 16:16:49,188 - root : INFO : Processed [RF        ] model with [VADER + custom   ] features in [        9.08] seconds ...
+2021-12-30 16:16:59,135 - root : INFO : Processed [MV        ] model with [VADER + custom   ] features in [        9.95] seconds ...
+2021-12-31 00:45:46,567 - root : INFO : Processed [BERT      ] model with [BERT             ] features in [    30527.40] seconds ...
+2021-12-31 00:49:04,041 - root : INFO : Processed [CNN Keras ] model with [glove.6B.100d    ] features in [      197.37] seconds ...
+2021-12-31 00:54:55,596 - root : INFO : Processed [CNN Keras ] model with [glove.6B.200d    ] features in [      351.55] seconds ...
+2021-12-31 01:22:53,689 - root : INFO : Processed [CNN Keras ] model with [crawl.2M.300d    ] features in [     1678.09] seconds ...
 
-2021-12-28 22:43:57,786 - root : INFO : Final report :
-                        model                  features           accuracy          precision             recall           f1_score        brier_score
-0         Majority Classifier                       n/a  0.62691 ± 0.00000  0.39302 ± 0.00000  0.62691 ± 0.00000  0.48315 ± 0.00000  1.63959 ± 0.00000
-1                  Rule Based                     VADER  0.49857 ± 0.00000  0.68675 ± 0.00000  0.49857 ± 0.00000  0.51998 ± 0.00000          nan ± nan
-2   Naive Bayes (Multinomial)                     VADER  0.63122 ± 0.00166  0.52059 ± 0.01843  0.63122 ± 0.00166  0.49318 ± 0.00335  0.47830 ± 0.00263
-3      Naive Bayes (Gaussian)                     VADER  0.65704 ± 0.00630  0.60668 ± 0.03174  0.65704 ± 0.00630  0.58942 ± 0.00546  0.49142 ± 0.01057
-4          K-Nearest Neighbor                     VADER  0.61284 ± 0.03294  0.64200 ± 0.02457  0.61284 ± 0.03294  0.61458 ± 0.03176  0.52570 ± 0.03156
-5               Decision Tree                     VADER  0.65178 ± 0.01123  0.59596 ± 0.01655  0.65178 ± 0.01123  0.60804 ± 0.01198  0.52803 ± 0.01843
-6               Random Forest                     VADER  0.66865 ± 0.01209  0.61355 ± 0.01927  0.66865 ± 0.01209  0.62128 ± 0.01331  0.45335 ± 0.01317
-7             Majority Voting                     VADER  0.65492 ± 0.02258  0.62218 ± 0.02286  0.65492 ± 0.02258  0.62345 ± 0.01123  0.46382 ± 0.01169
-8   Naive Bayes (Multinomial)            custom + VADER  0.68299 ± 0.00544  0.58338 ± 0.08754  0.68299 ± 0.00544  0.58704 ± 0.00682  0.41862 ± 0.00482
-9      Naive Bayes (Gaussian)            custom + VADER  0.67213 ± 0.00872  0.58422 ± 0.08478  0.67213 ± 0.00872  0.59827 ± 0.00694  0.57629 ± 0.01229
-10         K-Nearest Neighbor            custom + VADER  0.67616 ± 0.00790  0.66218 ± 0.01344  0.67616 ± 0.00790  0.66529 ± 0.01080  0.46841 ± 0.01025
-11              Decision Tree            custom + VADER  0.67234 ± 0.00818  0.65621 ± 0.01225  0.67234 ± 0.00818  0.66173 ± 0.01096  0.51728 ± 0.01630
-12              Random Forest            custom + VADER  0.69863 ± 0.00547  0.67951 ± 0.00564  0.69863 ± 0.00547  0.68541 ± 0.00540  0.42272 ± 0.01033
-13            Majority Voting            custom + VADER  0.68709 ± 0.00859  0.67691 ± 0.01034  0.68709 ± 0.00859  0.68079 ± 0.00952  0.43322 ± 0.00880
-14                       BERT                      BERT  0.83800 ± 0.00520  0.83537 ± 0.00767  0.83800 ± 0.00520  0.83533 ± 0.00786  0.24661 ± 0.00602
-15          BERT ( 1-st fold)                      BERT  0.82802 ± 0.00000  0.82184 ± 0.00000  0.82802 ± 0.00000  0.82053 ± 0.00000  0.25210 ± 0.00000
-16          BERT ( 2-nd fold)                      BERT  0.84085 ± 0.00000  0.84453 ± 0.00000  0.84085 ± 0.00000  0.84236 ± 0.00000  0.23828 ± 0.00000
-17          BERT ( 3-rd fold)                      BERT  0.84251 ± 0.00000  0.83970 ± 0.00000  0.84251 ± 0.00000  0.84079 ± 0.00000  0.24030 ± 0.00000
-18          BERT ( 4-th fold)                      BERT  0.83796 ± 0.00000  0.83337 ± 0.00000  0.83796 ± 0.00000  0.83453 ± 0.00000  0.25146 ± 0.00000
-19          BERT ( 5-th fold)                      BERT  0.84065 ± 0.00000  0.83742 ± 0.00000  0.84065 ± 0.00000  0.83846 ± 0.00000  0.25090 ± 0.00000
-20                  CNN Keras     res/glove.6B.100d.txt  0.78627 ± 0.00904  0.78477 ± 0.00939  0.78627 ± 0.00904  0.78275 ± 0.00940  0.31803 ± 0.01432
-21     CNN Keras ( 1-st fold)     res/glove.6B.100d.txt  0.80123 ± 0.00000  0.79664 ± 0.00000  0.80123 ± 0.00000  0.79604 ± 0.00000  0.29013 ± 0.00000
-22     CNN Keras ( 2-nd fold)     res/glove.6B.100d.txt  0.77937 ± 0.00000  0.78594 ± 0.00000  0.77937 ± 0.00000  0.77917 ± 0.00000  0.32500 ± 0.00000
-23     CNN Keras ( 3-rd fold)     res/glove.6B.100d.txt  0.78552 ± 0.00000  0.79533 ± 0.00000  0.78552 ± 0.00000  0.78818 ± 0.00000  0.32258 ± 0.00000
-24     CNN Keras ( 4-th fold)     res/glove.6B.100d.txt  0.77664 ± 0.00000  0.76602 ± 0.00000  0.77664 ± 0.00000  0.76399 ± 0.00000  0.33485 ± 0.00000
-25     CNN Keras ( 5-th fold)     res/glove.6B.100d.txt  0.78279 ± 0.00000  0.78208 ± 0.00000  0.78279 ± 0.00000  0.78075 ± 0.00000  0.32833 ± 0.00000
-26     CNN Keras ( 6-th fold)     res/glove.6B.100d.txt  0.79645 ± 0.00000  0.79129 ± 0.00000  0.79645 ± 0.00000  0.79297 ± 0.00000  0.29988 ± 0.00000
-27     CNN Keras ( 7-th fold)     res/glove.6B.100d.txt  0.77391 ± 0.00000  0.77186 ± 0.00000  0.77391 ± 0.00000  0.77179 ± 0.00000  0.33481 ± 0.00000
-28     CNN Keras ( 8-th fold)     res/glove.6B.100d.txt  0.77869 ± 0.00000  0.78095 ± 0.00000  0.77869 ± 0.00000  0.77886 ± 0.00000  0.32529 ± 0.00000
-29     CNN Keras ( 9-th fold)     res/glove.6B.100d.txt  0.79577 ± 0.00000  0.79135 ± 0.00000  0.79577 ± 0.00000  0.79066 ± 0.00000  0.30730 ± 0.00000
-30     CNN Keras (10-th fold)     res/glove.6B.100d.txt  0.79235 ± 0.00000  0.78628 ± 0.00000  0.79235 ± 0.00000  0.78511 ± 0.00000  0.31208 ± 0.00000
-31                  CNN Keras     res/glove.6B.200d.txt  0.78941 ± 0.01050  0.78928 ± 0.00920  0.78941 ± 0.01050  0.78510 ± 0.00987  0.33069 ± 0.01590
-32     CNN Keras ( 1-st fold)     res/glove.6B.200d.txt  0.80055 ± 0.00000  0.79072 ± 0.00000  0.80055 ± 0.00000  0.78998 ± 0.00000  0.31433 ± 0.00000
-33     CNN Keras ( 2-nd fold)     res/glove.6B.200d.txt  0.79030 ± 0.00000  0.78367 ± 0.00000  0.79030 ± 0.00000  0.78102 ± 0.00000  0.33236 ± 0.00000
-34     CNN Keras ( 3-rd fold)     res/glove.6B.200d.txt  0.78757 ± 0.00000  0.79455 ± 0.00000  0.78757 ± 0.00000  0.79015 ± 0.00000  0.32473 ± 0.00000
-35     CNN Keras ( 4-th fold)     res/glove.6B.200d.txt  0.77459 ± 0.00000  0.77272 ± 0.00000  0.77459 ± 0.00000  0.77343 ± 0.00000  0.35490 ± 0.00000
-36     CNN Keras ( 5-th fold)     res/glove.6B.200d.txt  0.77937 ± 0.00000  0.78603 ± 0.00000  0.77937 ± 0.00000  0.78208 ± 0.00000  0.34188 ± 0.00000
-37     CNN Keras ( 6-th fold)     res/glove.6B.200d.txt  0.78210 ± 0.00000  0.78522 ± 0.00000  0.78210 ± 0.00000  0.76904 ± 0.00000  0.35024 ± 0.00000
-38     CNN Keras ( 7-th fold)     res/glove.6B.200d.txt  0.78142 ± 0.00000  0.80016 ± 0.00000  0.78142 ± 0.00000  0.78606 ± 0.00000  0.33886 ± 0.00000
-39     CNN Keras ( 8-th fold)     res/glove.6B.200d.txt  0.79030 ± 0.00000  0.78034 ± 0.00000  0.79030 ± 0.00000  0.78009 ± 0.00000  0.33114 ± 0.00000
-40     CNN Keras ( 9-th fold)     res/glove.6B.200d.txt  0.79645 ± 0.00000  0.79382 ± 0.00000  0.79645 ± 0.00000  0.79405 ± 0.00000  0.31759 ± 0.00000
-41     CNN Keras (10-th fold)     res/glove.6B.200d.txt  0.81148 ± 0.00000  0.80558 ± 0.00000  0.81148 ± 0.00000  0.80507 ± 0.00000  0.30085 ± 0.00000
-42                  CNN Keras     res/crawl.2M.300d.txt  0.78579 ± 0.01583  0.78769 ± 0.00818  0.78579 ± 0.01583  0.78271 ± 0.01179  0.34673 ± 0.02510
-43     CNN Keras ( 1-st fold)     res/crawl.2M.300d.txt  0.80055 ± 0.00000  0.79910 ± 0.00000  0.80055 ± 0.00000  0.79724 ± 0.00000  0.32891 ± 0.00000
-44     CNN Keras ( 2-nd fold)     res/crawl.2M.300d.txt  0.79850 ± 0.00000  0.79015 ± 0.00000  0.79850 ± 0.00000  0.78674 ± 0.00000  0.32564 ± 0.00000
-45     CNN Keras ( 3-rd fold)     res/crawl.2M.300d.txt  0.80396 ± 0.00000  0.80225 ± 0.00000  0.80396 ± 0.00000  0.80089 ± 0.00000  0.31986 ± 0.00000
-46     CNN Keras ( 4-th fold)     res/crawl.2M.300d.txt  0.77459 ± 0.00000  0.77373 ± 0.00000  0.77459 ± 0.00000  0.77209 ± 0.00000  0.36512 ± 0.00000
-47     CNN Keras ( 5-th fold)     res/crawl.2M.300d.txt  0.79167 ± 0.00000  0.78492 ± 0.00000  0.79167 ± 0.00000  0.78579 ± 0.00000  0.34972 ± 0.00000
-48     CNN Keras ( 6-th fold)     res/crawl.2M.300d.txt  0.74590 ± 0.00000  0.79021 ± 0.00000  0.74590 ± 0.00000  0.75685 ± 0.00000  0.41244 ± 0.00000
-49     CNN Keras ( 7-th fold)     res/crawl.2M.300d.txt  0.78347 ± 0.00000  0.78183 ± 0.00000  0.78347 ± 0.00000  0.78142 ± 0.00000  0.34347 ± 0.00000
-50     CNN Keras ( 8-th fold)     res/crawl.2M.300d.txt  0.78893 ± 0.00000  0.77917 ± 0.00000  0.78893 ± 0.00000  0.77696 ± 0.00000  0.34277 ± 0.00000
-51     CNN Keras ( 9-th fold)     res/crawl.2M.300d.txt  0.78893 ± 0.00000  0.78620 ± 0.00000  0.78893 ± 0.00000  0.78445 ± 0.00000  0.33605 ± 0.00000
-52     CNN Keras (10-th fold)     res/crawl.2M.300d.txt  0.78142 ± 0.00000  0.78935 ± 0.00000  0.78142 ± 0.00000  0.78466 ± 0.00000  0.34330 ± 0.00000
+2021-12-31 01:22:53,945 - root : INFO : Final report :
+                        model               features           accuracy          precision             recall           f1_score        brier_score
+0         Majority Classifier                    n/a  0.62691 ± 0.00000  0.39302 ± 0.00000  0.62691 ± 0.00000  0.48315 ± 0.00000  1.63959 ± 0.00000
+1                  Rule Based                  VADER  0.49857 ± 0.00000  0.68675 ± 0.00000  0.49857 ± 0.00000  0.51998 ± 0.00000          nan ± nan
+2   Naive Bayes (Multinomial)                  VADER  0.63122 ± 0.00166  0.52059 ± 0.01843  0.63122 ± 0.00166  0.49318 ± 0.00335  0.47830 ± 0.00263
+3      Naive Bayes (Gaussian)                  VADER  0.65704 ± 0.00630  0.60668 ± 0.03174  0.65704 ± 0.00630  0.58942 ± 0.00546  0.49142 ± 0.01057
+4          K-Nearest Neighbor                  VADER  0.61284 ± 0.03294  0.64200 ± 0.02457  0.61284 ± 0.03294  0.61458 ± 0.03176  0.52570 ± 0.03156
+5               Decision Tree                  VADER  0.65061 ± 0.01178  0.59477 ± 0.01715  0.65061 ± 0.01178  0.60721 ± 0.01236  0.52956 ± 0.01985
+6               Random Forest                  VADER  0.67036 ± 0.00937  0.61719 ± 0.01522  0.67036 ± 0.00937  0.62288 ± 0.01012  0.45317 ± 0.01267
+7             Majority Voting                  VADER  0.65533 ± 0.02142  0.62236 ± 0.02145  0.65533 ± 0.02142  0.62357 ± 0.00915  0.46460 ± 0.01155
+8   Naive Bayes (Multinomial)         custom + VADER  0.68299 ± 0.00544  0.58338 ± 0.08754  0.68299 ± 0.00544  0.58704 ± 0.00682  0.41862 ± 0.00482
+9      Naive Bayes (Gaussian)         custom + VADER  0.67213 ± 0.00872  0.58422 ± 0.08478  0.67213 ± 0.00872  0.59827 ± 0.00694  0.57629 ± 0.01229
+10         K-Nearest Neighbor         custom + VADER  0.67616 ± 0.00790  0.66218 ± 0.01344  0.67616 ± 0.00790  0.66529 ± 0.01080  0.46841 ± 0.01025
+11              Decision Tree         custom + VADER  0.67329 ± 0.00854  0.65683 ± 0.01244  0.67329 ± 0.00854  0.66253 ± 0.01117  0.51619 ± 0.01449
+12              Random Forest         custom + VADER  0.69754 ± 0.00922  0.67679 ± 0.01213  0.69754 ± 0.00922  0.68279 ± 0.01131  0.42259 ± 0.00966
+13            Majority Voting         custom + VADER  0.68634 ± 0.00812  0.67625 ± 0.00961  0.68634 ± 0.00812  0.68019 ± 0.00884  0.43344 ± 0.00933
+14                       BERT                   BERT  0.83800 ± 0.00520  0.83537 ± 0.00767  0.83800 ± 0.00520  0.83533 ± 0.00786  0.24661 ± 0.00602
+15          BERT ( 1-st fold)                   BERT  0.82802 ± 0.00000  0.82184 ± 0.00000  0.82802 ± 0.00000  0.82053 ± 0.00000  0.25210 ± 0.00000
+16          BERT ( 2-nd fold)                   BERT  0.84085 ± 0.00000  0.84453 ± 0.00000  0.84085 ± 0.00000  0.84236 ± 0.00000  0.23828 ± 0.00000
+17          BERT ( 3-rd fold)                   BERT  0.84251 ± 0.00000  0.83970 ± 0.00000  0.84251 ± 0.00000  0.84079 ± 0.00000  0.24030 ± 0.00000
+18          BERT ( 4-th fold)                   BERT  0.83796 ± 0.00000  0.83337 ± 0.00000  0.83796 ± 0.00000  0.83453 ± 0.00000  0.25146 ± 0.00000
+19          BERT ( 5-th fold)                   BERT  0.84065 ± 0.00000  0.83742 ± 0.00000  0.84065 ± 0.00000  0.83846 ± 0.00000  0.25090 ± 0.00000
+20                  CNN Keras  res/glove.6B.100d.txt  0.79057 ± 0.01541  0.78850 ± 0.01590  0.79057 ± 0.01541  0.78802 ± 0.01528  0.31399 ± 0.01759
+21     CNN Keras ( 1-st fold)  res/glove.6B.100d.txt  0.80601 ± 0.00000  0.81002 ± 0.00000  0.80601 ± 0.00000  0.80775 ± 0.00000  0.30067 ± 0.00000
+22     CNN Keras ( 2-nd fold)  res/glove.6B.100d.txt  0.80533 ± 0.00000  0.80103 ± 0.00000  0.80533 ± 0.00000  0.80066 ± 0.00000  0.29826 ± 0.00000
+23     CNN Keras ( 3-rd fold)  res/glove.6B.100d.txt  0.81967 ± 0.00000  0.81463 ± 0.00000  0.81967 ± 0.00000  0.81499 ± 0.00000  0.28304 ± 0.00000
+24     CNN Keras ( 4-th fold)  res/glove.6B.100d.txt  0.76844 ± 0.00000  0.76434 ± 0.00000  0.76844 ± 0.00000  0.76552 ± 0.00000  0.33949 ± 0.00000
+25     CNN Keras ( 5-th fold)  res/glove.6B.100d.txt  0.78484 ± 0.00000  0.77474 ± 0.00000  0.78484 ± 0.00000  0.77582 ± 0.00000  0.32616 ± 0.00000
+26     CNN Keras ( 6-th fold)  res/glove.6B.100d.txt  0.78757 ± 0.00000  0.78161 ± 0.00000  0.78757 ± 0.00000  0.78294 ± 0.00000  0.32395 ± 0.00000
+27     CNN Keras ( 7-th fold)  res/glove.6B.100d.txt  0.78347 ± 0.00000  0.77758 ± 0.00000  0.78347 ± 0.00000  0.77927 ± 0.00000  0.31324 ± 0.00000
+28     CNN Keras ( 8-th fold)  res/glove.6B.100d.txt  0.76913 ± 0.00000  0.77391 ± 0.00000  0.76913 ± 0.00000  0.77128 ± 0.00000  0.33955 ± 0.00000
+29     CNN Keras ( 9-th fold)  res/glove.6B.100d.txt  0.78689 ± 0.00000  0.79675 ± 0.00000  0.78689 ± 0.00000  0.79001 ± 0.00000  0.31412 ± 0.00000
+30     CNN Keras (10-th fold)  res/glove.6B.100d.txt  0.79440 ± 0.00000  0.79035 ± 0.00000  0.79440 ± 0.00000  0.79199 ± 0.00000  0.30136 ± 0.00000
+31                  CNN Keras  res/glove.6B.200d.txt  0.77917 ± 0.02716  0.79379 ± 0.00840  0.77917 ± 0.02716  0.78237 ± 0.02129  0.34140 ± 0.03616
+32     CNN Keras ( 1-st fold)  res/glove.6B.200d.txt  0.80533 ± 0.00000  0.81388 ± 0.00000  0.80533 ± 0.00000  0.80617 ± 0.00000  0.30956 ± 0.00000
+33     CNN Keras ( 2-nd fold)  res/glove.6B.200d.txt  0.77527 ± 0.00000  0.78626 ± 0.00000  0.77527 ± 0.00000  0.77915 ± 0.00000  0.33835 ± 0.00000
+34     CNN Keras ( 3-rd fold)  res/glove.6B.200d.txt  0.80328 ± 0.00000  0.79885 ± 0.00000  0.80328 ± 0.00000  0.80055 ± 0.00000  0.30799 ± 0.00000
+35     CNN Keras ( 4-th fold)  res/glove.6B.200d.txt  0.77664 ± 0.00000  0.78502 ± 0.00000  0.77664 ± 0.00000  0.77962 ± 0.00000  0.35375 ± 0.00000
+36     CNN Keras ( 5-th fold)  res/glove.6B.200d.txt  0.72473 ± 0.00000  0.79112 ± 0.00000  0.72473 ± 0.00000  0.73937 ± 0.00000  0.41297 ± 0.00000
+37     CNN Keras ( 6-th fold)  res/glove.6B.200d.txt  0.79713 ± 0.00000  0.79621 ± 0.00000  0.79713 ± 0.00000  0.79558 ± 0.00000  0.32425 ± 0.00000
+38     CNN Keras ( 7-th fold)  res/glove.6B.200d.txt  0.80123 ± 0.00000  0.79747 ± 0.00000  0.80123 ± 0.00000  0.79894 ± 0.00000  0.31437 ± 0.00000
+39     CNN Keras ( 8-th fold)  res/glove.6B.200d.txt  0.73429 ± 0.00000  0.78445 ± 0.00000  0.73429 ± 0.00000  0.74824 ± 0.00000  0.40100 ± 0.00000
+40     CNN Keras ( 9-th fold)  res/glove.6B.200d.txt  0.79645 ± 0.00000  0.79579 ± 0.00000  0.79645 ± 0.00000  0.79476 ± 0.00000  0.30856 ± 0.00000
+41     CNN Keras (10-th fold)  res/glove.6B.200d.txt  0.77732 ± 0.00000  0.78880 ± 0.00000  0.77732 ± 0.00000  0.78128 ± 0.00000  0.34321 ± 0.00000
+42                  CNN Keras  res/crawl-300d-2M.vec  0.79228 ± 0.00668  0.79209 ± 0.00681  0.79228 ± 0.00668  0.78995 ± 0.00695  0.33756 ± 0.00997
+43     CNN Keras ( 1-st fold)  res/crawl-300d-2M.vec  0.79850 ± 0.00000  0.79365 ± 0.00000  0.79850 ± 0.00000  0.79550 ± 0.00000  0.32626 ± 0.00000
+44     CNN Keras ( 2-nd fold)  res/crawl-300d-2M.vec  0.79713 ± 0.00000  0.79317 ± 0.00000  0.79713 ± 0.00000  0.79409 ± 0.00000  0.33302 ± 0.00000
+45     CNN Keras ( 3-rd fold)  res/crawl-300d-2M.vec  0.80464 ± 0.00000  0.79973 ± 0.00000  0.80464 ± 0.00000  0.80125 ± 0.00000  0.32139 ± 0.00000
+46     CNN Keras ( 4-th fold)  res/crawl-300d-2M.vec  0.79030 ± 0.00000  0.78286 ± 0.00000  0.79030 ± 0.00000  0.78295 ± 0.00000  0.34464 ± 0.00000
+47     CNN Keras ( 5-th fold)  res/crawl-300d-2M.vec  0.79303 ± 0.00000  0.78527 ± 0.00000  0.79303 ± 0.00000  0.78311 ± 0.00000  0.33872 ± 0.00000
+48     CNN Keras ( 6-th fold)  res/crawl-300d-2M.vec  0.77869 ± 0.00000  0.79075 ± 0.00000  0.77869 ± 0.00000  0.78280 ± 0.00000  0.35161 ± 0.00000
+49     CNN Keras ( 7-th fold)  res/crawl-300d-2M.vec  0.79372 ± 0.00000  0.79344 ± 0.00000  0.79372 ± 0.00000  0.79308 ± 0.00000  0.32619 ± 0.00000
+50     CNN Keras ( 8-th fold)  res/crawl-300d-2M.vec  0.79030 ± 0.00000  0.79850 ± 0.00000  0.79030 ± 0.00000  0.79361 ± 0.00000  0.33835 ± 0.00000
+51     CNN Keras ( 9-th fold)  res/crawl-300d-2M.vec  0.78962 ± 0.00000  0.80236 ± 0.00000  0.78962 ± 0.00000  0.79408 ± 0.00000  0.34784 ± 0.00000
+52     CNN Keras (10-th fold)  res/crawl-300d-2M.vec  0.78689 ± 0.00000  0.78117 ± 0.00000  0.78689 ± 0.00000  0.77901 ± 0.00000  0.34757 ± 0.00000
